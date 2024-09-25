@@ -1,5 +1,4 @@
 {
-  
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
@@ -18,7 +17,7 @@
       "@utils/*": ["utils/*"],
       "@middleware/*": ["middleware/*"],
       "@services/*": ["services/*"],
-      "@validators/*": ["validators/*"],
+      "@validators/*": ["validators/*"]
     }
   },
   "include": ["src/**/*"]
