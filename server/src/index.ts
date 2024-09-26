@@ -4,7 +4,8 @@ import express, { Request, Response } from "express";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const defaultPort = 5000;
+const port = process.env.PORT || defaultPort;
 
 app.use(express.json());
 
