@@ -19,7 +19,7 @@ export default defineConfig({
     "@utils": path.resolve(__dirname, 'src/utils'),
   }},
   server: {
-    port: process.env.PORT ? parseInt(process.env.PORT) : 5173,
+    port: 8000,
     strictPort: true, 
     host: true
   },
