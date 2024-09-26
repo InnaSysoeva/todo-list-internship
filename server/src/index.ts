@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import connectDB from './configs/database.config'
-import taskRouter from '@routes/task.route'
+import connectDB from "./configs/database.config";
+import taskRouter from "@routes/task.route";
 
 dotenv.config();
 
@@ -15,8 +15,8 @@ const port = process.env.PORT || defaultPort;
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json())
-app.use('/api', taskRouter)
+app.use(bodyParser.json());
+app.use("/api", taskRouter);
 
 app.get("/", (request: Request, result: Response) => {
   result.send("Hello, World!");
