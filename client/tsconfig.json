@@ -4,7 +4,7 @@
     { "path": "./src/configs/tsconfig.app.json" },
     { "path": "./src/configs//tsconfig.node.json" }
   ],
-  "compilerOptions": {
+  "compilerOptions": { 
     "types": ["node"],
     "baseUrl": "./",
     "paths": {
