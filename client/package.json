@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint --config ./src/configs/eslint.config.js .",
     "preview": "vite preview",
-    "format": "prettier --write .",
-    "serve": "vite preview"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "react": "^18.3.1",
