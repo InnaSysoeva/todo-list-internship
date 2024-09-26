@@ -14,7 +14,6 @@ const defaultPort = 5000;
 const port = process.env.PORT || defaultPort;
 
 
-
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json())
