@@ -8,6 +8,6 @@ const taskSchema = Joi.object({
   state: Joi.number().required(),
 });
 
-export const validateTask = (task: any) => {
+export const taskValidator = (task: any) => {
   return taskSchema.validate(task);
 };
