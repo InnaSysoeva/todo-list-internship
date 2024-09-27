@@ -1,20 +1,24 @@
-import { Request, Response } from "express";
-import { TaskModel } from "@models/task.model";
+import { Request, Response, NextFunction } from "express";
 import { createTaskService } from "@services/task.service";
 import { validateTask } from "@validators/task.validator";
+import { createError } from "@utils/error.utils";
 
-export const createTask = async (request: Request, result: Response) => {
+export const createTask = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
   const { error } = validateTask(request.body);
   if (error) {
-    return result
-      .status(400)
-      .json({ message: "Validation error", details: error.details });
+    return next(createError(400, "Validation error", error.details));
   }
 
   try {
     const newTask = await createTaskService(request.body);
     result.status(200).json(newTask);
   } catch (error) {
-    result.status(400).json({ message: "Error creating task", error });
+    if (error instanceof Error) {
+      return next(createError(400, "Error creating task", error.message));
+    }
   }
 };

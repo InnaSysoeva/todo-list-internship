@@ -2,12 +2,12 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import connectDB from "./configs/database.config";
+import connectDataBase from "./configs/database.config";
 import taskRouter from "@routes/task.route";
+import { ErrorHandler } from "@middleware/error.handler";
 
 dotenv.config();
-
-connectDB();
+connectDataBase();
 
 const app = express();
 const defaultPort = 5000;
@@ -17,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use("/api", taskRouter);
+app.use(ErrorHandler);
 
 app.get("/", (request: Request, result: Response) => {
   result.send("Hello, World!");

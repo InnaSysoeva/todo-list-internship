@@ -12,7 +12,6 @@ const taskSchema = new mongoose.Schema({
   dateStart: { type: String, required: true },
   dateEnd: { type: String, required: true },
   state: { type: Number, enum: TaskStateEnum, required: true },
-  priority: { type: String, required: true },
 });
 
 export const TaskModel = mongoose.model("Task", taskSchema);
