@@ -11,13 +11,17 @@ export const createTask = async (
 ) => {
   const isValid = validateTask(request.body, next);
   if (!isValid) return;
-  
+
   try {
     const newTask = await createTaskService(request.body);
     result.status(200).json(newTask);
   } catch (error) {
     if (error instanceof Error) {
-      return next(createError(500, errorMessages.creation('Task'), {details: error.message}));
+      return next(
+        createError(500, errorMessages.creation("Task"), {
+          details: error.message,
+        }),
+      );
     }
   }
 };
@@ -29,34 +33,25 @@ export const updateTask = async (
 ) => {
   const isValid = validateTask(request.body, next);
   if (!isValid) return;
-  
+
   try {
     const taskId = request.params.id;
     const updatedTask = await updateTaskService(taskId, request.body);
-    if(!updatedTask) {
-      return next(createError(401, errorMessages.update('Task'), {details: 'Id Not Found'}));
+    if (!updatedTask) {
+      return next(
+        createError(401, errorMessages.update("Task"), {
+          details: "Id Not Found",
+        }),
+      );
     }
     result.status(200).json(updatedTask);
   } catch (error) {
     if (error instanceof Error) {
-      return next(createError(500, errorMessages.creation('Task'), {details: error.message}));
+      return next(
+        createError(500, errorMessages.creation("Task"), {
+          details: error.message,
+        }),
+      );
     }
   }
 };
-
-// export const updateTask = async (
-//   request: Request,
-//   result: Response,
-//   next: NextFunction,
-// ) => {
-//   validateTask(request.body, next)
-//   try {
-//     const taskId = request.params.id;
-//     const updatedTask = await updateTaskService(taskId, request.body);
-//     result.status(200).json(updatedTask);
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       return next(createError(400, "Error updating task", error.message));
-//     }
-//   }
-// };

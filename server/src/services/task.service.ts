@@ -7,6 +7,8 @@ export const createTaskService = async (task: any) => {
 };
 
 export const updateTaskService = async (taskId: string, task: any) => {
-  const updatedTask = await TaskModel.findByIdAndUpdate(taskId, task, { new: true });
+  const updatedTask = await TaskModel.findByIdAndUpdate(taskId, task, {
+    new: true,
+  });
   return updatedTask;
 };
