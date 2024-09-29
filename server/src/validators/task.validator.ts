@@ -6,6 +6,7 @@ const taskSchema = Joi.object({
   dateStart: Joi.string().required(),
   dateEnd: Joi.string().required(),
   state: Joi.number().required(),
+  priority: Joi.number().required(),
 });
 
 export const taskValidator = (task: any) => {
