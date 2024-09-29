@@ -22,3 +22,8 @@ export const getAllTasksService = async () => {
   const allTasks = await TaskModel.find();
   return allTasks;
 };
+
+export const getTaskByIdService = async (taskId: string) => {
+  const task = await TaskModel.findById(taskId);
+  return task;
+};
