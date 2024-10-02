@@ -6,7 +6,7 @@ export const Header = () => {
     <AppBar position="static">
       <Toolbar sx={{height: 90}}>
         <Typography variant="h6" component="div">
-          Header
+          Header Section
         </Typography>
       </Toolbar>
     </AppBar>
