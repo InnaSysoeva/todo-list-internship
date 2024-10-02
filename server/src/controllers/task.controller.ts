@@ -39,7 +39,7 @@ export const updateTask = async (
     const updatedTask = await updateTaskService(taskId, request.body);
     if (!updatedTask) {
       return next(
-        createError(401, errorMessages.notFound("Task"), {
+        createError(401, errorMessages.notFound("Id"), {
           details: "Id Not Found",
         }),
       );
