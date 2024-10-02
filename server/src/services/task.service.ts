@@ -3,6 +3,7 @@ import { TaskModel } from "@models/task.model";
 export const createTaskService = async (task: any) => {
   const newTask = new TaskModel(task);
   await newTask.save();
+
   return newTask;
 };
 
@@ -27,3 +28,12 @@ export const getTaskByIdService = async (taskId: string) => {
   const task = await TaskModel.findById(taskId);
   return task;
 };
+
+export const updateTaskStateService = async (taskId: string, taskState: Number) => {
+  const updatedTask = await TaskModel.findByIdAndUpdate(
+    taskId,
+    { state: taskState },
+    { new: true }
+  );
+  return updatedTask;
+}
