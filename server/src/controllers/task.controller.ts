@@ -45,7 +45,7 @@ export const updateTask = async (
     const updatedTask = await updateTaskService(taskId, request.body);
     if (!updatedTask) {
       return next(
-        createError(401, errorMessages.update("Task"), {
+        createError(401, errorMessages.notFound("Id"), {
           details: "Id Not Found",
         }),
       );
@@ -72,7 +72,7 @@ export const deleteTask = async (
     const deletedTask = await deleteTaskService(taskId);
     if (!deletedTask) {
       return next(
-        createError(401, errorMessages.notFound("Task"), {
+        createError(401, errorMessages.notFound("Id"), {
           details: "Id Not Found",
         }),
       );
@@ -118,7 +118,7 @@ export const getTaskById = async (
     const task = await getTaskByIdService(taskId);
     if (!task) {
       return next(
-        createError(401, errorMessages.notFound("Task"), {
+        createError(401, errorMessages.notFound("Id"), {
           details: "Id Not Found",
         }),
       );
