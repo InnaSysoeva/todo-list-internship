@@ -8,9 +8,6 @@ export const Header = () => {
       <AppBar position="static">
         <Toolbar sx={{ height: 90 }} color="primary">
           <MenuIcon sx={{ mr: 3 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            DoDo
-          </Typography>
           <Typography variant="h6" component="div">
             Header Section
           </Typography>
