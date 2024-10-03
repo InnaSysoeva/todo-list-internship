@@ -3,11 +3,14 @@ import { OverviewPage } from "./main/pages/OverviewPage";
 import "./styles/App.css";
 import { mainTheme } from "./styles/mainTheme";
 import { ThemeProvider } from "@mui/material";
+import { CustomDialogProvider } from "./main/components/CustomDialog/CustomDialogProvider";
 
 function App() {
   return (
     <ThemeProvider theme={mainTheme}>
-      <OverviewPage />
+      <CustomDialogProvider>
+        <OverviewPage />
+      </CustomDialogProvider>
     </ThemeProvider>
   );
 }
