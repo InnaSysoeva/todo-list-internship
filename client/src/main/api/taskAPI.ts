@@ -1,31 +1,25 @@
 import { $host } from "./index";
 
 export const getAllTasks = async () => {
-  const allTasks = await $host.get("/");
-  return allTasks;
+  return await $host.get("/");
 };
 
 export const createTask = async (task: object) => {
-  const newTask = await $host.post("/", task);
-  return newTask;
+  return await $host.post("/", task);
 };
 
 export const updateTask = async (taskId: string, task: object) => {
-  const updatedTask = await $host.put(`/${taskId}`, task);
-  return updatedTask;
+  return await $host.put(`/${taskId}`, task);
 };
 
 export const deleteTask = async (taskId: string) => {
-  const deletedTask = await $host.delete(`/${taskId}`);
-  return deletedTask;
+  return await $host.delete(`/${taskId}`);
 };
 
 export const getTaskById = async (taskId: string) => {
-  const task = await $host.get(`/${taskId}`);
-  return task;
+  return await $host.get(`/${taskId}`);
 };
 
 export const updateTaskState = async (taskId: string, taskState: number) => {
-  const task = await $host.patch(`/${taskId}`, taskState);
-  return task;
+  return await $host.patch(`/${taskId}`, taskState);
 };
