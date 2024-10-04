@@ -10,6 +10,7 @@ const taskSchema = Joi.object({
   priority: Joi.number().required(),
 });
 
+
 export const taskValidator = (task: TaskType) => {
   return taskSchema.validate(task);
 };
