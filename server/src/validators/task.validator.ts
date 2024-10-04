@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { TaskType } from "types/task.type";
 
 const taskSchema = Joi.object({
   title: Joi.string().required(),
@@ -9,6 +10,6 @@ const taskSchema = Joi.object({
   priority: Joi.number().required(),
 });
 
-export const taskValidator = (task: object) => {
+export const taskValidator = (task: TaskType) => {
   return taskSchema.validate(task);
 };
