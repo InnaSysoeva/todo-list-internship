@@ -1,13 +1,13 @@
 import React, { ReactNode, useState } from "react";
 import { ToastContext } from "../../context/ToastContext";
 import { ToastStateType } from "./customToast.types";
-import { defaultToast } from "../../constants/customToast.default";
+import { defaultToastState } from "../../constants/customToast.default";
 import { ToastSeverity } from "../../enums/customToast.enums";
 
 export const CustomToastProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [toast, setToast] = useState<ToastStateType>(defaultToast);
+  const [toast, setToast] = useState<ToastStateType>(defaultToastState);
 
   const handleOpenToast = (
     content: string,
@@ -19,7 +19,7 @@ export const CustomToastProvider: React.FC<{ children: ReactNode }> = ({
 
   const handleCloseToast = () => {
     setToast((prevToast) => ({
-      ...defaultToast,
+      ...defaultToastState,
       severity: prevToast.severity,
     }));
   };

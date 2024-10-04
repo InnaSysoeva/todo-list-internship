@@ -1,12 +1,12 @@
 import React, { useState, ReactNode } from "react";
-import { defaultCustomDialog } from "../../constants/customDialog.default";
+import { defaultCustomDialogState } from "../../constants/customDialog.default";
 import { DialogStateType } from "./customDialog.types";
 import { DialogContext } from "../../context/DialogContext";
 
 export const CustomDialogProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [dialog, setDialog] = useState<DialogStateType>(defaultCustomDialog);
+  const [dialog, setDialog] = useState<DialogStateType>(defaultCustomDialogState);
 
   const handleOpenDialog = (
     title: string,
@@ -17,7 +17,7 @@ export const CustomDialogProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const handleCloseDialog = () => {
-    setDialog(defaultCustomDialog);
+    setDialog(defaultCustomDialogState);
   };
 
   return (
