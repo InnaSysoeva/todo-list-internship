@@ -1,7 +1,7 @@
 import { $host } from "./index";
 
 export const getAllTasks = async () => {
-  const allTasks = await $host.get("/all");
+  const allTasks = await $host.get("/");
   return allTasks;
 };
 
