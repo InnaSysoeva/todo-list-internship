@@ -2,23 +2,9 @@
   "files": [],
   "references": [
     { "path": "./src/configs/tsconfig.app.json" },
-    { "path": "./src/configs//tsconfig.node.json" }
+    { "path": "./src/configs/tsconfig.node.json" }
   ],
-  "compilerOptions": { 
-    "types": ["node"],
-    "baseUrl": "./",
-    "paths": {
-      "@": ["./src"],
-      "@components": ["./src/main/components"],
-      "@services": ["./src/services"],
-      "@constants": ["./src/main/constants"],
-      "@hooks": ["./src/main/hooks"],
-      "@models": ["./src/main/models"],
-      "@layouts": ["./src/main/layouts"],
-      "@enums": ["./src/main/enums"],
-      "@api": ["./src/main/api"],
-      "@styles": ["./src/styles"],
-      "@utils": ["./src/utils"]
-    }
+  "compilerOptions": {
+    "types": ["node"]
   }
 }

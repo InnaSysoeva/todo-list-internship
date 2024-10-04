@@ -1,10 +1,14 @@
 import React from "react";
+import { OverviewPage } from "./main/pages/OverviewPage";
+import { mainTheme } from "./styles/mainTheme";
+import { ThemeProvider } from "@mui/material";
+import "./styles/App.css";
 
 function App() {
   return (
-    <>
-      <p>Hello, World!</p> 
-    </>
+    <ThemeProvider theme={mainTheme}>
+      <OverviewPage />
+    </ThemeProvider>
   );
 }
 
