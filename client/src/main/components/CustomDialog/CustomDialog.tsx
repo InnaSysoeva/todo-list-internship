@@ -1,4 +1,5 @@
 import React from "react";
+import { useDialog } from "../../hooks/useDialog";
 import {
   Dialog,
   DialogTitle,
@@ -6,10 +7,10 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { useDialog } from "./CustomDialogProvider";
 
 export const CustomDialog = () => {
   const { dialog, handleCloseDialog } = useDialog();
+
   const handleConfirm = () => {
     if (dialog.onConfirm) {
       dialog.onConfirm();
@@ -19,8 +20,8 @@ export const CustomDialog = () => {
 
   return (
     <Dialog open={dialog.isOpen} onClose={handleCloseDialog}>
-      <DialogTitle>{dialog.content?.title}</DialogTitle>
-      <DialogContent>{dialog.content?.body}</DialogContent>
+      <DialogTitle>{dialog.title}</DialogTitle>
+      <DialogContent>{dialog.content}</DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog}>Close</Button>
         <Button onClick={handleConfirm}>OK</Button>

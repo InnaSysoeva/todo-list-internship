@@ -1,18 +1,18 @@
 import { ReactNode } from "react";
 
-export type DialogContent = {
-  title: string;
-  body: ReactNode;
-};
-
-export type DialogState = {
+export type DialogStateType = {
   isOpen: boolean;
-  content: DialogContent;
+  title: string;
+  content: ReactNode;
   onConfirm: () => void;
 };
 
 export type DialogContextType = {
   handleCloseDialog: () => void;
-  handleOpenDialog: (content: DialogContent, onConfirm: () => void) => void;
-  dialog: DialogState;
+  handleOpenDialog: (
+    title: string,
+    content: ReactNode,
+    onConfirm: () => void,
+  ) => void;
+  dialog: DialogStateType;
 };
