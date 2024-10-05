@@ -14,3 +14,7 @@ export const updateTaskService = async (taskId: string, task: any) => {
 
   return updatedTask;
 };
+
+export const deleteTaskService = async (taskId: string) => {
+   return await TaskModel.findByIdAndDelete(taskId);
+};

@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { createTaskService, updateTaskService } from "@services/task.service";
+import {
+  createTaskService,
+  deleteTaskService,
+  updateTaskService,
+} from "@services/task.service";
 import { validateTask } from "@utils/validation.utils";
 import errorMessages from "@utils/error.messages";
 import { createError } from "@utils/error.utils";
@@ -40,7 +44,7 @@ export const updateTask = async (
     if (!updatedTask) {
       return next(
         createError(401, errorMessages.notFound("Id"), {
-          details: "Id Not Found",
+          details: errorMessages.notFound("Id"),
         }),
       );
     }
@@ -49,6 +53,33 @@ export const updateTask = async (
     if (error instanceof Error) {
       return next(
         createError(500, errorMessages.update("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
+
+export const deleteTask = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const taskId = request.params.id;
+    const deletedTask = await deleteTaskService(taskId);
+    if (!deletedTask) {
+      return next(
+        createError(401, errorMessages.notFound("Id"), {
+          details: errorMessages.notFound("Id"),
+        }),
+      );
+    }
+    result.status(200).json(deletedTask);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.deletion("Task"), {
           details: error.message,
         }),
       );
