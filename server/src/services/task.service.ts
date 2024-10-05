@@ -26,3 +26,15 @@ export const getAllTasksService = async () => {
 export const getTaskByIdService = async (taskId: string) => {
   return await TaskModel.findById(taskId);
 };
+
+export const updateTaskStateService = async (taskId: string, taskState: Number) => {
+  const updatedTask = await TaskModel.findByIdAndUpdate(
+    taskId,
+    { state: taskState },
+    { new: true }
+  );
+  
+  return updatedTask;
+}
+};
+

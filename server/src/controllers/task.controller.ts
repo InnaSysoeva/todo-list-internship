@@ -5,6 +5,7 @@ import {
   getAllTasksService,
   getTaskByIdService,
   updateTaskService,
+  updateTaskStateService,
 } from "@services/task.service";
 import { validateTask } from "@utils/validation.utils";
 import errorMessages from "@utils/error.messages";
@@ -134,3 +135,33 @@ export const getTaskById = async (
     }
   }
 };
+
+export const updateTaskState = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const taskId = request.params.id;
+    const { state } = request.body;
+    const updatedTask = await updateTaskStateService(taskId, state);
+    if (!updatedTask) {
+      return next(
+        createError(401, errorMessages.notFound("Id"), {
+          details: errorMessages.notFound("Id"),
+        }),
+      );
+    }
+    result.status(200).json(updatedTask);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.update("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+}
+
+
