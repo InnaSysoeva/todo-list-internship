@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   createTaskService,
   deleteTaskService,
+  getAllTasksService,
   updateTaskService,
 } from "@services/task.service";
 import { validateTask } from "@utils/validation.utils";
@@ -80,6 +81,25 @@ export const deleteTask = async (
     if (error instanceof Error) {
       return next(
         createError(500, errorMessages.deletion("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
+
+export const getAllTasks = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const allTasks = await getAllTasksService();
+    result.status(200).json(allTasks);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.notFound("Task"), {
           details: error.message,
         }),
       );
