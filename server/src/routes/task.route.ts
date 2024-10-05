@@ -3,6 +3,7 @@ import {
   createTask,
   deleteTask,
   getAllTasks,
+  getTaskById,
   updateTask,
 } from "@controllers/task.controller";
 
@@ -11,5 +12,6 @@ router.post("/", createTask);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);
 router.get("/", getAllTasks);
+router.get("/:id", getTaskById);
 
 export default router;

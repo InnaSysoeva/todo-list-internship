@@ -22,3 +22,7 @@ export const deleteTaskService = async (taskId: string) => {
 export const getAllTasksService = async () => {
   return await TaskModel.find();
 };
+
+export const getTaskByIdService = async (taskId: string) => {
+  return await TaskModel.findById(taskId);
+};

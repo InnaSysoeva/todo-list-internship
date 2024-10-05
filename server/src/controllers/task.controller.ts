@@ -3,6 +3,7 @@ import {
   createTaskService,
   deleteTaskService,
   getAllTasksService,
+  getTaskByIdService,
   updateTaskService,
 } from "@services/task.service";
 import { validateTask } from "@utils/validation.utils";
@@ -96,6 +97,33 @@ export const getAllTasks = async (
   try {
     const allTasks = await getAllTasksService();
     result.status(200).json(allTasks);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.notFound("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
+
+export const getTaskById = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const taskId = request.params.id;
+    const task = await getTaskByIdService(taskId);
+    if (!task) {
+      return next(
+        createError(401, errorMessages.notFound("Id"), {
+          details: errorMessages.notFound("Id"),
+        }),
+      );
+    }
+    result.status(200).json(task);
   } catch (error) {
     if (error instanceof Error) {
       return next(
