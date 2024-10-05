@@ -6,3 +6,4 @@ export type TaskType = {
     state: number;
     priority: number;
 };
+
