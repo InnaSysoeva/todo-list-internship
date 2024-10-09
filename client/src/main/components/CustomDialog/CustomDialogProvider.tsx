@@ -6,14 +6,12 @@ import { DialogContext } from "../../context/DialogContext";
 export const CustomDialogProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [dialog, setDialog] = useState<DialogStateType>(defaultCustomDialogState);
+  const [dialog, setDialog] = useState<DialogStateType>(
+    defaultCustomDialogState,
+  );
 
-  const handleOpenDialog = (
-    title: string,
-    content: ReactNode,
-    onConfirm: () => void,
-  ) => {
-    setDialog({ isOpen: true, title, content, onConfirm });
+  const handleOpenDialog = (title: string, content: ReactNode) => {
+    setDialog({ isOpen: true, title, content });
   };
 
   const handleCloseDialog = () => {

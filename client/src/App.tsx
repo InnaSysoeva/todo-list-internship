@@ -1,17 +1,24 @@
 import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { OverviewPage } from "./main/pages/OverviewPage";
-import { mainTheme } from "./styles/mainTheme";
+import { mainTheme } from "./styles/stylesMUI/mainTheme";
 import { ThemeProvider } from "@mui/material";
 import { CustomDialogProvider } from "./main/components/CustomDialog/CustomDialogProvider";
 import "./styles/App.css";
 
 function App() {
   return (
-    <ThemeProvider theme={mainTheme}>
-      <CustomDialogProvider>
-        <OverviewPage />
-      </CustomDialogProvider>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={mainTheme}>
+        <CustomDialogProvider>
+          <Routes>
+            <Route path="/" element={<OverviewPage />} />
+            <Route path="/new" element={<OverviewPage />} />
+            <Route path="/:id" element={<OverviewPage />} />
+          </Routes>
+        </CustomDialogProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 

@@ -13,6 +13,7 @@ export const CustomPagination = () => {
           },
           "& .MuiPaginationItem-root": {
             color: "primary.dark",
+            fontSize: "0.9rem",
           },
         }}
       />
