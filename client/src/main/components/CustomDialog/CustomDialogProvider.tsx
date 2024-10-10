@@ -12,11 +12,11 @@ export const CustomDialogProvider: React.FC<{ children: ReactNode }> = ({
     title: string,
     content: ReactNode,
     onConfirm: () => void,
-  ) => {
+  ): void => {
     setDialog({ isOpen: true, title, content, onConfirm });
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = (): void => {
     setDialog(defaultCustomDialogState);
   };
 

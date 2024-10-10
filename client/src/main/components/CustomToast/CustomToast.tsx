@@ -1,12 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import { useToast } from "../../hooks/useToast";
 import CloseIcon from "@mui/icons-material/Close";
 
-export const CustomToast = () => {
+export const CustomToast: React.FC = () => {
   const { toast, handleCloseToast } = useToast();
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     handleCloseToast();
   };
 

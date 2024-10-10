@@ -13,11 +13,11 @@ export const CustomToastProvider: React.FC<{ children: ReactNode }> = ({
     content: string,
     duration: number,
     severity: ToastSeverity,
-  ) => {
+  ): void => {
     setToast({ isOpen: true, content, duration, severity });
   };
 
-  const handleCloseToast = () => {
+  const handleCloseToast = (): void => {
     setToast((prevToast) => ({
       ...defaultToastState,
       severity: prevToast.severity,
