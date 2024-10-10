@@ -26,7 +26,7 @@ export const TableHeader: React.FC = () => {
     State: null,
   });
 
-  const handleSortClick = (header: string) => {
+  const handleSortClick = (header: string): void => {
     setOrder((prevOrder) => {
       const currentOrder = prevOrder[header];
       const nextOrder =

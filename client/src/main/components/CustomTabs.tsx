@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import { tabsStyles } from "../../styles/stylesMUI/tabs.styles";
+import { SxProps, Theme } from '@mui/material';
 
 export const CustomTabs = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number): void => {
     setTabIndex(newValue);
   };
 
-  const getTabStyle = (index: number, tabIndex: number) => ({
+  const getTabStyle = (index: number, tabIndex: number): SxProps<Theme> =>({
     borderBottom: 3,
     borderColor: "primary.main",
     "&.Mui-selected": {

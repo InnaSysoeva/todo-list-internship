@@ -36,7 +36,7 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 
-export const TaskTable = () => {
+export const TaskTable = (): JSX.Element =>  {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [anchorElement, setAnchorElelemt] = useState<null | HTMLElement>(null);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
@@ -57,31 +57,31 @@ export const TaskTable = () => {
     fetchTasks();
   }, []);
 
-  const handleRowClick = (id: string) => {
+  const handleRowClick = (id: string): void => {
     setOpenDescription(openDescription === id ? null : id);
   };
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     task: TaskType,
-  ) => {
+  ): void => {
     event.stopPropagation();
     setAnchorElelemt(event.currentTarget);
     setSelectedTask(task);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (): void => {
     setAnchorElelemt(null);
     setSelectedTask(null);
   };
 
-  const handleTaskCreated = (response: any) => {
+  const handleTaskCreated = (response: any): void => {
     handleCloseDialog();
     const newTask = { ...response.data, id: response.data._id };
     setTasks((prevTasks) => [newTask, ...prevTasks]);
   };
 
-  const handleTaskUpdated = (response: any) => {
+  const handleTaskUpdated = (response: any): void => {
     handleCloseDialog();
     const updatedTask = response.data;
     const taskWithId = { ...updatedTask, id: updatedTask._id };
@@ -90,15 +90,15 @@ export const TaskTable = () => {
     );
   };
 
-  const handleCreateTask = () => {
+  const handleCreateTask = (): void => {
     navigate("/new");
   };
 
-  const handleUpdateTask = (id: string) => {
+  const handleUpdateTask = (id: string): void => {
     navigate(`/${id}`);
   };
 
-  const openDialog = (taskId?: string) => {
+  const openDialog = (taskId?: string): void => {
     if (taskId) {
       handleOpenDialog(
         "Update Task",
@@ -118,7 +118,7 @@ export const TaskTable = () => {
     await updateTaskState(taskId, newStateIndex);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string): void => {
     handleMenuClose();
   };
 

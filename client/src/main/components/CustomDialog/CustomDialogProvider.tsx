@@ -10,11 +10,11 @@ export const CustomDialogProvider: React.FC<{ children: ReactNode }> = ({
     defaultCustomDialogState,
   );
 
-  const handleOpenDialog = (title: string, content: ReactNode) => {
+  const handleOpenDialog = (title: string, content: ReactNode): void => {
     setDialog({ isOpen: true, title, content });
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = (): void => {
     setDialog(defaultCustomDialogState);
   };
 

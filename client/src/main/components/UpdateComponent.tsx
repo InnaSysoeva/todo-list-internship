@@ -6,7 +6,12 @@ import { TaskFormInputType } from "../types/taskFormInput.type";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-export const UpdateComponent = ({ onTaskUpdated, taskId }) => {
+interface UpdateComponentProps {
+  onTaskUpdated: (response: any) => void;
+  taskId: string; 
+}
+
+export const UpdateComponent: React.FC<UpdateComponentProps> = ({ onTaskUpdated, taskId }) => {
   const [task, setTask] = useState<TaskFormInputType>();
   const [taskState, setTaskState] = useState<number>(1);
 
@@ -19,7 +24,6 @@ export const UpdateComponent = ({ onTaskUpdated, taskId }) => {
       dateStart: response.data.dateStart,
       dateEnd: response.data.dateEnd,
     };
-    console.log(taskFormInput);
     setTaskState(response.data.state);
     setTask(taskFormInput);
   };

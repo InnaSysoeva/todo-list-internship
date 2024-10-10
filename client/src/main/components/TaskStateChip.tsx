@@ -16,7 +16,7 @@ export const TaskStateChip: React.FC<TaskStateChipProps> = ({
   );
   const { label, color } = chipStates[stateIndex];
 
-  const handleChipClick = () => {
+  const handleChipClick = (): void => {
     const newIndex = (stateIndex + 1) % chipStates.length;
     setStateIndex(newIndex);
     onStateChange(chipStates[newIndex].state);

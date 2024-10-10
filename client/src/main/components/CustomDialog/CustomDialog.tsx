@@ -2,7 +2,7 @@ import React from "react";
 import { useDialog } from "../../hooks/useDialog";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 
-export const CustomDialog = () => {
+export const CustomDialog = (): JSX.Element => {
   const { dialog, handleCloseDialog } = useDialog();
 
   return (
