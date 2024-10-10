@@ -5,17 +5,20 @@ import { mainTheme } from "./styles/stylesMUI/mainTheme";
 import { ThemeProvider } from "@mui/material";
 import { CustomDialogProvider } from "./main/components/CustomDialog/CustomDialogProvider";
 import "./styles/App.css";
+import { ConfirmationDialogProvider } from "./main/components/ConfirmationDialog/ConfirmationDialogProvider";
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={mainTheme}>
         <CustomDialogProvider>
-          <Routes>
-            <Route path="/" element={<OverviewPage />} />
-            <Route path="/new" element={<OverviewPage />} />
-            <Route path="/:id" element={<OverviewPage />} />
-          </Routes>
+          <ConfirmationDialogProvider>
+            <Routes>
+              <Route path="/" element={<OverviewPage />} />
+              <Route path="/new" element={<OverviewPage />} />
+              <Route path="/:id" element={<OverviewPage />} />
+            </Routes>
+          </ConfirmationDialogProvider>
         </CustomDialogProvider>
       </ThemeProvider>
     </BrowserRouter>

@@ -21,11 +21,13 @@ import { CustomTabs } from "./CustomTabs";
 import { TaskStateChip } from "./TaskStateChip";
 import { useDialog } from "../hooks/useDialog";
 import { TableHeader } from "./TableHeader";
-import { getAllTasks, updateTaskState } from "../api/taskAPI";
+import { getAllTasks, updateTaskState, deleteTask } from "../api/taskAPI";
 import { tableBoxStyles } from "../../styles/stylesMUI/tableBox.styles";
 import { fabStyles } from "../../styles/stylesMUI/fab.styles";
 import { CreateComponent } from "./CreateComponent";
 import { UpdateComponent } from "./UpdateComponent";
+import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
+import { useConfirmationDialog } from "../hooks/useConfirmationDialog";
 import useUrlDialogListener from "../hooks/useUrlDialogListener";
 import {
   ExpandMore as ExpandMoreIcon,
@@ -43,6 +45,7 @@ export const TaskTable = (): JSX.Element =>  {
   const [openDescription, setOpenDescription] = useState<string | null>(null);
   const navigate = useNavigate();
   const { handleOpenDialog, handleCloseDialog } = useDialog();
+  const { openConfirmationDialog, closeConfirmationDialog } = useConfirmationDialog();
 
   const fetchTasks = async () => {
     const response = await getAllTasks();
@@ -118,8 +121,17 @@ export const TaskTable = (): JSX.Element =>  {
     await updateTaskState(taskId, newStateIndex);
   };
 
-  const handleDelete = (id: string): void => {
+  const handleDeleteTask = async (id: string) => {
     handleMenuClose();
+
+    openConfirmationDialog('Do you want to delete this task?', async () => {
+      try {
+        await deleteTask(id);
+        setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
+      } catch (error) {
+        
+      }
+    });
   };
 
   return (
@@ -185,7 +197,10 @@ export const TaskTable = (): JSX.Element =>  {
                       >
                         <EditIcon fontSize="small" /> Update
                       </MenuItem>
-                      <MenuItem onClick={() => handleDelete(task.id)}>
+                      <MenuItem 
+                        onClick={() =>
+                          selectedTask && handleDeleteTask(selectedTask.id)
+                      }>
                         <DeleteIcon fontSize="small" /> Delete
                       </MenuItem>
                     </Menu>
@@ -216,6 +231,7 @@ export const TaskTable = (): JSX.Element =>  {
       <Fab onClick={handleCreateTask} sx={fabStyles}>
         <AddIcon />
       </Fab>
+      <ConfirmationDialog/>
     </Box>
   );
 };
