@@ -1,5 +1,5 @@
 export const defaultConfirmationDialogState = {
-    isOpen: false,
-    title: "",
-    onConfirm: () => {},
+  isOpen: false,
+  title: "",
+  onConfirm: () => {},
 };

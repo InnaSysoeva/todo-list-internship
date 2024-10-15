@@ -15,19 +15,31 @@ import {
   Fab,
   Collapse,
 } from "@mui/material";
-import { CustomPagination } from "./CustomPagination";
-import { TaskType } from "../types/task.type";
-import { CustomTabs } from "./CustomTabs";
-import { TaskStateChip } from "./TaskStateChip";
-import { useDialog } from "../hooks/useDialog";
-import { TableHeader } from "./TableHeader";
-import { getAllTasks, updateTaskState, deleteTask } from "../api/taskAPI";
+import {
+  updateTaskState,
+  deleteTask,
+  getTasksByPage,
+  getPagesCount,
+} from "../api/taskAPI";
 import { tableBoxStyles } from "../../styles/stylesMUI/tableBox.styles";
 import { fabStyles } from "../../styles/stylesMUI/fab.styles";
 import { CreateComponent } from "./CreateComponent";
 import { UpdateComponent } from "./UpdateComponent";
 import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
 import { useConfirmationDialog } from "../hooks/useConfirmationDialog";
+import { TableParams } from "../types/tableParams.type";
+import { defaultTableParams } from "../constants/tableParams.default";
+import { urlRoutes } from "../constants/urlRoutes";
+import { confirmationMessages } from "../constants/confirmation.messages";
+import { CustomPagination } from "./CustomPagination";
+import { TaskType } from "../types/task.type";
+import { CustomTabs } from "./CustomTabs";
+import { TaskStateChip } from "./TaskStateChip";
+import { useDialog } from "../hooks/useDialog";
+import { TableHeader } from "./TableHeader";
+import { StateEnum } from "../enums/state.enum";
+import { SearchInputComponent } from "./SearchInputComponent";
+import { tabsBoxStyles } from "../../styles/stylesMUI/tabsBox.styles";
 import useUrlDialogListener from "../hooks/useUrlDialogListener";
 import {
   ExpandMore as ExpandMoreIcon,
@@ -38,26 +50,48 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 
-export const TaskTable = (): JSX.Element =>  {
+
+export const TaskTable = (): JSX.Element => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [anchorElement, setAnchorElelemt] = useState<null | HTMLElement>(null);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [openDescription, setOpenDescription] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [tableParams, setTableParams] =
+    useState<TableParams>(defaultTableParams);
   const { handleOpenDialog, handleCloseDialog } = useDialog();
-  const { openConfirmationDialog, closeConfirmationDialog } = useConfirmationDialog();
+  const { openConfirmationDialog } = useConfirmationDialog();
+  const navigate = useNavigate();
+  const tasksPerPage = 6;
 
-  const fetchTasks = async () => {
-    const response = await getAllTasks();
-    const tasksWithId = response.data.map((task: any) => ({
-      ...task,
-      id: task._id,
-    }));
-    setTasks(tasksWithId);
+  const mapTasksWithId = (response: {
+    data: Array<Omit<TaskType, "id"> & { _id: string }>;
+  }): TaskType[] => {
+    return response.data.map(
+      (
+        task: Omit<TaskType, "id"> & {
+          _id: string;
+        },
+      ) => ({
+        ...task,
+        id: task._id,
+      }),
+    );
+  };
+
+  const fetchTasks: () => Promise<void> = async () => {
+    const response = await getTasksByPage(defaultTableParams, tasksPerPage);
+    setTasks(mapTasksWithId(response));
+  };
+
+  const fetchPageCount: () => Promise<void> = async () => {
+    const response = await getPagesCount();
+    setPageCount(Math.ceil(response.data / tasksPerPage));
   };
 
   useEffect(() => {
     fetchTasks();
+    fetchPageCount();
   }, []);
 
   const handleRowClick = (id: string): void => {
@@ -78,13 +112,18 @@ export const TaskTable = (): JSX.Element =>  {
     setSelectedTask(null);
   };
 
-  const handleTaskCreated = (response: any): void => {
+  const handleTaskCreated = (response: {
+    data: Omit<TaskType, "id"> & { _id: string };
+  }): void => {
     handleCloseDialog();
     const newTask = { ...response.data, id: response.data._id };
     setTasks((prevTasks) => [newTask, ...prevTasks]);
+    fetchPageCount();
   };
 
-  const handleTaskUpdated = (response: any): void => {
+  const handleTaskUpdated = (response: {
+    data: Omit<TaskType, "id"> & { _id: string };
+  }): void => {
     handleCloseDialog();
     const updatedTask = response.data;
     const taskWithId = { ...updatedTask, id: updatedTask._id };
@@ -94,11 +133,11 @@ export const TaskTable = (): JSX.Element =>  {
   };
 
   const handleCreateTask = (): void => {
-    navigate("/new");
+    navigate(urlRoutes.new);
   };
 
   const handleUpdateTask = (id: string): void => {
-    navigate(`/${id}`);
+    navigate(urlRoutes.id(id));
   };
 
   const openDialog = (taskId?: string): void => {
@@ -117,33 +156,71 @@ export const TaskTable = (): JSX.Element =>  {
 
   useUrlDialogListener(openDialog);
 
-  const handleStateChange = async (taskId: string, newStateIndex: number) => {
+  const handleStateChange = async (
+    taskId: string,
+    newStateIndex: number,
+  ): Promise<void> => {
     await updateTaskState(taskId, newStateIndex);
   };
 
-  const handleDeleteTask = async (id: string) => {
+  const handleDeleteTask = async (id: string): Promise<void> => {
     handleMenuClose();
 
-    openConfirmationDialog('Do you want to delete this task?', async () => {
+    openConfirmationDialog(confirmationMessages.deletion("Task"), async () => {
       try {
         await deleteTask(id);
-        setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
-      } catch (error) {
-        
-      }
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+        fetchPageCount();
+      } catch (error) {}
     });
+  };
+
+  const handleTableUpdate = async (
+    newParams: Partial<TableParams>,
+  ): Promise<void> => {
+    const prevParams = { ...tableParams };
+    const combinedParams = {
+      ...prevParams,
+      ...newParams,
+    };
+
+    setTasks(
+      mapTasksWithId(await getTasksByPage(combinedParams, tasksPerPage)),
+    );
+
+    if (
+      (newParams.filter &&
+        Object.values(StateEnum).includes(newParams.filter)) ||
+      (newParams.search && newParams.search.trim() !== "")
+    ) {
+      setPageCount(Math.ceil(tasks.length / tasksPerPage));
+    } else {
+      fetchPageCount();
+    }
+
+    setTableParams((prevParams) => ({
+      ...prevParams,
+      ...newParams,
+    }));
   };
 
   return (
     <Box sx={tableBoxStyles}>
-      <Box sx={{ width: "100%" }}>
-        <CustomTabs />
+      <Box
+        sx={tabsBoxStyles}
+      >
+        <CustomTabs
+          onFilterClicked={(filter) => handleTableUpdate({ filter })}
+        />
+        <SearchInputComponent
+          onSearchClicked={(search) => handleTableUpdate({ search })}
+        />
       </Box>
-      <TableContainer component={Paper}>
+      <TableContainer sx={{ width: 1200 }} component={Paper}>
         <Table sx={{ height: 470, backgroundColor: "secondary.main" }}>
-          <TableHeader />
+          <TableHeader onSortClicked={(sort) => handleTableUpdate({ sort })} />
           <TableBody>
-            {tasks.slice(0, 5).map((task) => (
+            {tasks.slice(0, tasksPerPage).map((task) => (
               <React.Fragment>
                 <TableRow key={task.id} style={{ cursor: "pointer" }}>
                   <TableCell>
@@ -155,7 +232,7 @@ export const TaskTable = (): JSX.Element =>  {
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell sx={{ width: 500 }}>{task.title}</TableCell>
+                  <TableCell sx={{ width: 600 }}>{task.title}</TableCell>
                   <TableCell>
                     <TaskStateChip
                       initialState={task.state}
@@ -197,10 +274,11 @@ export const TaskTable = (): JSX.Element =>  {
                       >
                         <EditIcon fontSize="small" /> Update
                       </MenuItem>
-                      <MenuItem 
+                      <MenuItem
                         onClick={() =>
                           selectedTask && handleDeleteTask(selectedTask.id)
-                      }>
+                        }
+                      >
                         <DeleteIcon fontSize="small" /> Delete
                       </MenuItem>
                     </Menu>
@@ -227,11 +305,14 @@ export const TaskTable = (): JSX.Element =>  {
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomPagination />
+      <CustomPagination
+        pageCount={pageCount}
+        onPageChange={(page) => handleTableUpdate({ page })}
+      />
       <Fab onClick={handleCreateTask} sx={fabStyles}>
         <AddIcon />
       </Fab>
-      <ConfirmationDialog/>
+      <ConfirmationDialog />
     </Box>
   );
 };

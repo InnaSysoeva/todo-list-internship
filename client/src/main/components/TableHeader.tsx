@@ -1,40 +1,43 @@
 import React, { useState } from "react";
 import { TableCell, TableSortLabel, Tooltip } from "@mui/material";
 import { tableHeaderStyles } from "../../styles/stylesMUI/tableHeader.styles";
+import { headers } from "../constants/headers";
+import { SortOrder } from "../enums/sortOrder.enum";
+import { fieldMapping } from "../constants/fieldMapping";
+import { SortType } from "../types/sort.type";
 
-interface Header {
-  label: string;
-  sortable: boolean;
+interface TableHeaderProps {
+  onSortClicked: (sortModel: SortType) => void;
 }
 
-export const TableHeader: React.FC = () => {
-  const headers: Header[] = [
-    { label: "More", sortable: false },
-    { label: "Task", sortable: false },
-    { label: "State", sortable: true },
-    { label: "Date Start", sortable: true },
-    { label: "Date End", sortable: true },
-    { label: "Actions", sortable: false },
-  ];
+export const TableHeader: React.FC<TableHeaderProps> = ({ onSortClicked }) => {
+  const initialOrder = headers.reduce(
+    (acc, header) => {
+      if (header.sortable) {
+        acc[header.label] = SortOrder.None;
+      }
+      return acc;
+    },
+    {} as { [key: string]: SortOrder },
+  );
 
-  const ascendingSort = "asc";
-  const descendingSort = "desc";
-
-  const [order, setOrder] = useState<{ [key: string]: "asc" | "desc" | null }>({
-    "Date Start": null,
-    "Date End": null,
-    State: null,
-  });
+  const [order, setOrder] = useState<{ [key: string]: SortOrder }>(
+    initialOrder,
+  );
 
   const handleSortClick = (header: string): void => {
     setOrder((prevOrder) => {
       const currentOrder = prevOrder[header];
       const nextOrder =
-        currentOrder === ascendingSort
-          ? descendingSort
-          : currentOrder === descendingSort
-            ? null
-            : ascendingSort;
+        currentOrder === SortOrder.Ascending
+          ? SortOrder.Descending
+          : currentOrder === SortOrder.Descending
+            ? SortOrder.None
+            : SortOrder.Ascending;
+
+      const fieldInDataBase = fieldMapping[header];
+      onSortClicked({ field: fieldInDataBase, order: nextOrder });
+
       return { ...prevOrder, [header]: nextOrder };
     });
   };
@@ -46,8 +49,14 @@ export const TableHeader: React.FC = () => {
           {header.sortable ? (
             <Tooltip title="Sort">
               <TableSortLabel
-                active={order[header.label] !== null}
-                direction={order[header.label] || ascendingSort}
+                active={order[header.label] !== SortOrder.None}
+                direction={
+                  order[header.label] === SortOrder.Ascending
+                    ? "asc"
+                    : order[header.label] === SortOrder.Descending
+                      ? "desc"
+                      : undefined
+                }
                 onClick={() => handleSortClick(header.label)}
                 sx={{ ml: 3 }}
               >

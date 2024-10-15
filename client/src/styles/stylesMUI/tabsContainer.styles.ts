@@ -1,9 +1,7 @@
 import { SxProps, Theme } from "@mui/material/styles";
 
-export const tabsStyles = {
-  sx: {
-    flexGrow: 1,
-  } as SxProps<Theme>,
+export const tabsContainerStyles = {
+  sx: {} as SxProps<Theme>,
   TabIndicatorProps: {
     sx: {
       backgroundColor: "primary.dark",

@@ -1,19 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pagination, Stack } from "@mui/material";
 
-export const CustomPagination = () => {
+interface CustomPaginationProps {
+  pageCount: number;
+  onPageChange: (page: number) => void;
+}
+
+export const CustomPagination: React.FC<CustomPaginationProps> = ({
+  pageCount,
+  onPageChange,
+}) => {
+  const [page, setPage] = useState<number>(1);
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ): void => {
+    setPage(value);
+    onPageChange(value);
+  };
+
   return (
     <Stack spacing={2} sx={{ marginTop: 3 }}>
       <Pagination
-        count={10}
+        count={pageCount}
+        page={page}
+        onChange={handlePageChange}
         sx={{
-          "& .Mui-selected": {
-            backgroundColor: "primary.main",
-            color: "white",
-          },
           "& .MuiPaginationItem-root": {
-            color: "primary.dark",
-            fontSize: "0.9rem",
+            color: "black",
+            fontSize: "15px",
           },
         }}
       />

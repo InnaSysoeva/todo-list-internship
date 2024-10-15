@@ -1,3 +1,5 @@
+import { StateEnum } from "../enums/state.enum";
+
 export type TaskType = {
   id: string;
   title: string;
@@ -5,5 +7,5 @@ export type TaskType = {
   priority: number;
   dateStart: string;
   dateEnd: string;
-  state: number;
+  state: StateEnum;
 };

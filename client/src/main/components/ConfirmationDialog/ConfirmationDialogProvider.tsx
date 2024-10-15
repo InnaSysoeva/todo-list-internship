@@ -1,7 +1,7 @@
-import React, {useState, ReactNode} from 'react'
-import { ConfirmationDialogContext } from '../../context/ConfirmationDialogContext'
-import { ConfirmationDialogStateType } from './confirmationDialog.types'
-import { defaultConfirmationDialogState } from '../../constants/confirmationDialog.default'
+import React, { useState, ReactNode } from "react";
+import { ConfirmationDialogContext } from "../../context/ConfirmationDialogContext";
+import { ConfirmationDialogStateType } from "./confirmationDialog.types";
+import { defaultConfirmationDialogState } from "../../constants/confirmationDialog.default";
 
 export const ConfirmationDialogProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -10,7 +10,10 @@ export const ConfirmationDialogProvider: React.FC<{ children: ReactNode }> = ({
     defaultConfirmationDialogState,
   );
 
-  const openConfirmationDialog = (title: string, onConfirm: () => void): void => {
+  const openConfirmationDialog = (
+    title: string,
+    onConfirm: () => void,
+  ): void => {
     setDialog({ isOpen: true, title, onConfirm });
   };
 
@@ -19,8 +22,10 @@ export const ConfirmationDialogProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <ConfirmationDialogContext.Provider value={{ dialog, closeConfirmationDialog, openConfirmationDialog }}>
+    <ConfirmationDialogContext.Provider
+      value={{ dialog, closeConfirmationDialog, openConfirmationDialog }}
+    >
       {children}
     </ConfirmationDialogContext.Provider>
-  )
-}
+  );
+};

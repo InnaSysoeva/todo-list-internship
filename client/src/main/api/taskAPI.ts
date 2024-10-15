@@ -23,3 +23,11 @@ export const getTaskById = async (taskId: string) => {
 export const updateTaskState = async (taskId: string, taskState: number) => {
   return await $host.patch(`/${taskId}`, { state: taskState });
 };
+
+export const getTasksByPage = async (tableParams: object, limit: number) => {
+  return await $host.get(`/sort/${limit}`, { params: tableParams });
+};
+
+export const getPagesCount = async () => {
+  return await $host.get(`/pages`);
+};
