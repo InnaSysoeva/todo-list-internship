@@ -14,3 +14,25 @@ export const updateTaskService = async (taskId: string, task: any) => {
 
   return updatedTask;
 };
+
+export const deleteTaskService = async (taskId: string) => {
+  return await TaskModel.findByIdAndDelete(taskId);
+};
+
+export const getAllTasksService = async () => {
+  return await TaskModel.find();
+};
+
+export const getTaskByIdService = async (taskId: string) => {
+  return await TaskModel.findById(taskId);
+};
+
+export const updateTaskStateService = async (taskId: string, taskState: Number) => {
+  const updatedTask = await TaskModel.findByIdAndUpdate(
+    taskId,
+    { state: taskState },
+    { new: true }
+  );
+  
+  return updatedTask;
+}
