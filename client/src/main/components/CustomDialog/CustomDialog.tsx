@@ -11,7 +11,7 @@ import {
 export const CustomDialog = () => {
   const { dialog, handleCloseDialog } = useDialog();
 
-  const handleConfirm = () => {
+  const handleConfirm = (): void =>  {
     if (dialog.onConfirm) {
       dialog.onConfirm();
     }
