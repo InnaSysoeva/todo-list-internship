@@ -4,6 +4,7 @@ import { OverviewPage } from "./main/pages/OverviewPage";
 import { mainTheme } from "./styles/stylesMUI/mainTheme";
 import { ThemeProvider } from "@mui/material";
 import { CustomDialogProvider } from "./main/components/CustomDialog/CustomDialogProvider";
+import { CustomToastProvider } from "./main/components/CustomToast/CustomToastProvider";
 import "./styles/App.css";
 
 function App() {
