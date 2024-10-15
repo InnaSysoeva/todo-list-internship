@@ -1,4 +1,6 @@
 import { TaskModel } from "@models/task.model";
+import { SortOrder } from "enums/sortOrder.enum";
+import { TaskStateEnum } from "@models/task.model";
 
 export const createTaskService = async (task: any) => {
   const newTask = new TaskModel(task);
@@ -27,12 +29,52 @@ export const getTaskByIdService = async (taskId: string) => {
   return await TaskModel.findById(taskId);
 };
 
-export const updateTaskStateService = async (taskId: string, taskState: Number) => {
+export const updateTaskStateService = async (
+  taskId: string,
+  taskState: Number,
+) => {
   const updatedTask = await TaskModel.findByIdAndUpdate(
     taskId,
     { state: taskState },
-    { new: true }
+    { new: true },
   );
-  
+
   return updatedTask;
-}
+};
+
+export const getTasksByPageService = async (
+  tableParams: {
+    page: number;
+    filter: TaskStateEnum;
+    sort: { field: string; order: SortOrder };
+    search: string;
+  },
+  limit: number,
+) => {
+  const { page, filter, sort, search } = tableParams;
+  const query = TaskModel.find();
+
+  if (search && search !== "") {
+    const regex = new RegExp(search, "i");
+    query.or([
+      { title: { $regex: regex } },
+      { description: { $regex: regex } },
+      { dateStart: { $regex: regex } },
+      { dateEnd: { $regex: regex } },
+    ]);
+  }
+
+  if (filter && Object.values(TaskStateEnum).includes(filter)) {
+    query.where("state").equals(filter);
+  }
+
+  if (sort && sort.order !== SortOrder.None) {
+    query.sort({ [sort.field]: sort.order });
+  }
+
+  return await query.limit(limit).skip((page - 1) * limit);
+};
+
+export const getPagesCountService = async () => {
+  return await TaskModel.countDocuments();
+};

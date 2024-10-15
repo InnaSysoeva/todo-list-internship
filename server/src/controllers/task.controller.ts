@@ -3,13 +3,17 @@ import {
   createTaskService,
   deleteTaskService,
   getAllTasksService,
+  getPagesCountService,
   getTaskByIdService,
+  getTasksByPageService,
   updateTaskService,
   updateTaskStateService,
 } from "@services/task.service";
 import { validateTask } from "@utils/validation.utils";
 import errorMessages from "@utils/error.messages";
 import { createError } from "@utils/error.utils";
+import { SortType } from "types/sort.type";
+import { TaskStateEnum } from "@models/task.model";
 
 export const createTask = async (
   request: Request,
@@ -162,6 +166,49 @@ export const updateTaskState = async (
       );
     }
   }
-}
+};
 
+export const getTasksByPage = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const limit = parseInt(request.params.limit);
+    const tableParams = {
+      page: parseInt(request.query.page as string),
+      filter: parseInt(request.query.filter as string),
+      sort: request.query.sort as SortType,
+      search: request.query.search as string,
+    };
+    const tasks = await getTasksByPageService(tableParams, limit);
+    result.status(200).json(tasks);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.notFound("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
 
+export const getPagesCount = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const pagesCount = await getPagesCountService();
+    result.status(200).json(pagesCount);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.notFound("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
