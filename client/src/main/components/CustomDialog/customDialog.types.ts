@@ -4,15 +4,10 @@ export type DialogStateType = {
   isOpen: boolean;
   title: string;
   content: ReactNode;
-  onConfirm: () => void;
 };
 
 export type DialogContextType = {
   handleCloseDialog: () => void;
-  handleOpenDialog: (
-    title: string,
-    content: ReactNode,
-    onConfirm: () => void,
-  ) => void;
+  handleOpenDialog: (title: string, content: ReactNode) => void;
   dialog: DialogStateType;
 };

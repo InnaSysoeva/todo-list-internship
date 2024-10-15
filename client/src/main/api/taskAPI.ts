@@ -21,5 +21,5 @@ export const getTaskById = async (taskId: string) => {
 };
 
 export const updateTaskState = async (taskId: string, taskState: number) => {
-  return await $host.patch(`/${taskId}`, taskState);
+  return await $host.patch(`/${taskId}`, { state: taskState });
 };
