@@ -14,6 +14,8 @@ import {
   Chip,
   Fab,
   Collapse,
+  Typography,
+  useMediaQuery,
 } from "@mui/material";
 import {
   updateTaskState,
@@ -47,7 +49,9 @@ import {
   Add as AddIcon,
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
-import { tableCellStyles } from "../../styles/stylesMUI/tableCellStyles";
+import { cellWidths, tableCellStyles } from "../../styles/stylesMUI/tableCell.styles";
+import { dateBoxStyles } from "../../styles/stylesMUI/dateBox.styles";
+import { CellTaskDataType } from "../types/cellTaskData.type";
 
 
 export const TaskTable = (): JSX.Element => {
@@ -62,6 +66,7 @@ export const TaskTable = (): JSX.Element => {
   const { handleOpenDialog, handleCloseDialog } = useDialog();
   const { openConfirmationDialog } = useConfirmationDialog();
   const navigate = useNavigate();
+  const isSmallScreen = useMediaQuery('(max-width:900px)')
   const tasksPerPage = 8;
 
   const fetchTasks: () => Promise<void> = async () => {
@@ -173,17 +178,22 @@ export const TaskTable = (): JSX.Element => {
     }));
   };
 
-    const createTaskCellData = (task: TaskType) => ({
+    const createTaskCellData = (task: TaskType): CellTaskDataType => {
+      return {
       expandIcon: (
         <IconButton onClick={() => handleRowClick(task._id)}>
           {openDescription === task._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
       ),
       title: ( <Box>{task.title}</Box> ),
-      dateStart: (
+      dateStart: isSmallScreen ? (
+        <Box sx={{ display: 'none' }}></Box>
+      ) : (
         <Chip color="primary" label={task.dateStart} />
       ),
-      dateEnd: (
+      dateEnd: isSmallScreen ? (
+        <Box sx={{ display: 'none' }}></Box>
+      ) : (
         <Chip color="primary" label={task.dateEnd} />
       ),
       stateChip: (
@@ -211,7 +221,7 @@ export const TaskTable = (): JSX.Element => {
           </Menu>
         </React.Fragment>
       ),
-    });
+    }};
 
   return (
     <Box sx={tableBoxStyles}>
@@ -226,7 +236,7 @@ export const TaskTable = (): JSX.Element => {
         />
       </Box>
       <TableContainer component={Paper}>
-        <Table sx={{height: "450px", backgroundColor: "secondary.main" }}>
+        <Table sx={{ backgroundColor: "secondary.main" }}>
           <TableHeader onSortClicked={(sort) => handleTableUpdate({ sort })} />
           <TableBody>
             {tasks.map((task) => {
@@ -235,13 +245,24 @@ export const TaskTable = (): JSX.Element => {
                 <React.Fragment>
                   <TableRow key={task._id}>
                       {Object.values(cellData).map((value, index) => (
-                        <TableCell sx={tableCellStyles} key={index}>{value}</TableCell>
+                        <TableCell sx={{...tableCellStyles, 
+                          width: cellWidths[index],
+                          textAlign: index === 1 ? 'left' : 'center'}} key={index}>{value}</TableCell>
                       ))}
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={6} sx={{paddingBottom: 0, paddingTop: 0 }}>
                       <Collapse in={openDescription === task._id}>
-                         <Box>{task.description}</Box>
+                        {isSmallScreen && (
+                          <Box sx={dateBoxStyles}>
+                            <Typography sx={{ fontSize: '14px' }}>Date Start: {task.dateStart}</Typography>
+                            <Typography sx={{ fontSize: '14px' }}>Date End: {task.dateEnd}</Typography>
+                          </Box>
+                        )}
+                         <Box sx={{ pl: "10px", pr: "10px", textAlign: 'justify'}}>
+                          <Typography sx={{fontSize: '15px', mt: "10px", textAlign: "left"}}>Additional Details:</Typography>
+                          <Box>{task.description}</Box>
+                         </Box>
                       </Collapse>
                     </TableCell>
                   </TableRow>
