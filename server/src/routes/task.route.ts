@@ -3,7 +3,6 @@ import {
   createTask,
   deleteTask,
   getAllTasks,
-  getPagesCount,
   getTaskById,
   getTasksByPage,
   updateTask,
@@ -11,7 +10,6 @@ import {
 } from "@controllers/task.controller";
 
 const router = express.Router();
-router.get("/pages", getPagesCount);
 router.post("/", createTask);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);

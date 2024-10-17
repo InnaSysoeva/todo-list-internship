@@ -54,7 +54,7 @@ export const getTasksByPageService = async (
   const { page, filter, sort, search } = tableParams;
   const query = TaskModel.find();
 
-  if (search && search !== "") {
+  if (search) {
     const regex = new RegExp(search, "i");
     query.or([
       { title: { $regex: regex } },
@@ -71,10 +71,12 @@ export const getTasksByPageService = async (
   if (sort && sort.order !== SortOrder.None) {
     query.sort({ [sort.field]: sort.order });
   }
+  
+  const totalDocuments = await query.clone().countDocuments();
+  const tasks = await query.limit(limit).skip((page - 1) * limit);
 
-  return await query.limit(limit).skip((page - 1) * limit);
-};
-
-export const getPagesCountService = async () => {
-  return await TaskModel.countDocuments();
+  return {
+    totalDocuments,
+    tasks
+  };
 };
