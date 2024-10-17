@@ -8,9 +8,7 @@ import Box from "@mui/material/Box";
 import { TaskType } from "../types/task.type";
 
 interface UpdateComponentProps {
-  onTaskUpdated: (response: {
-    data: Omit<TaskType, "id"> & { _id: string };
-  }) => void;
+  onTaskUpdated: (response: {data: TaskType}) => void;
   taskId: string;
 }
 

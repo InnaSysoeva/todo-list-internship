@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Input, Button } from "@mui/material";
+import { Box, Input, Button, Tooltip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   searchInputStyles,
@@ -9,6 +9,7 @@ import {
 interface SearchInputProps {
   onSearchClicked: (input: string) => void;
 }
+
 export const SearchInputComponent: React.FC<SearchInputProps> = ({
   onSearchClicked,
 }) => {
@@ -28,9 +29,11 @@ export const SearchInputComponent: React.FC<SearchInputProps> = ({
         size="small"
         placeholder="Search for task..."
       />
-      <Button onClick={handleSearchClick} type="button" sx={searchButtonStyles}>
-        <SearchIcon />
-      </Button>
+      <Tooltip title="Search">
+        <Button onClick={handleSearchClick} type="button" sx={searchButtonStyles}>
+          <SearchIcon />
+        </Button>
+      </Tooltip>
     </Box>
   );
 };

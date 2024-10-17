@@ -7,7 +7,6 @@ export const Header = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{ height: 40 }} color="primary">
-          <MenuIcon sx={{ mr: 3 }} />
           <Typography variant="h5"></Typography>
         </Toolbar>
       </AppBar>

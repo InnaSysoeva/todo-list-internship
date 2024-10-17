@@ -10,19 +10,23 @@ interface TableHeaderProps {
   onSortClicked: (sortModel: SortType) => void;
 }
 
+interface Header {
+  label: string;
+  sortable: boolean;
+}
+
 export const TableHeader: React.FC<TableHeaderProps> = ({ onSortClicked }) => {
-  const initialOrder = headers.reduce(
-    (acc, header) => {
+  const createInitialOrder = (headers: Header[]): { [key: string]: SortOrder } => {
+    return headers.reduce((acc, header) => {
       if (header.sortable) {
         acc[header.label] = SortOrder.None;
       }
       return acc;
-    },
-    {} as { [key: string]: SortOrder },
-  );
+    }, {} as { [key: string]: SortOrder });
+  };
 
   const [order, setOrder] = useState<{ [key: string]: SortOrder }>(
-    initialOrder,
+    createInitialOrder(headers)
   );
 
   const handleSortClick = (header: string): void => {

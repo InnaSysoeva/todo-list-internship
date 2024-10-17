@@ -47,7 +47,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({
           helperText={errors.title?.message}
         />
       </FormControl>
-
       <FormControl fullWidth margin="normal">
         <TextField
           label="Description"
@@ -80,7 +79,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             }}
           />
         </FormControl>
-
         <FormControl fullWidth margin="normal">
           <TextField
             label="Date End"
@@ -111,7 +109,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({
           <MenuItem value={PriorityEnum.High}>High</MenuItem>
         </Select>
       </FormControl>
-
       <Button
         sx={{ display: "block", width: "40%", margin: "20px auto" }}
         type="submit"
