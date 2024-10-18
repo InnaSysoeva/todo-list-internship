@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -14,11 +14,13 @@ import {
   Chip,
   Fab,
   Collapse,
+  Button
 } from "@mui/material";
 import {
   updateTaskState,
   deleteTask,
   getTasksByPage,
+  createTasksFromCsvFile
 } from "../api/taskAPI";
 import { tableBoxStyles } from "../../styles/stylesMUI/tableBox.styles";
 import { fabStyles } from "../../styles/stylesMUI/fab.styles";
@@ -48,6 +50,7 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 import { tableCellStyles } from "../../styles/stylesMUI/tableCellStyles";
+import { uploadCsvButtonStyles } from "../../styles/stylesMUI/uploadCsvButton.styles";
 
 
 export const TaskTable = (): JSX.Element => {
@@ -62,6 +65,7 @@ export const TaskTable = (): JSX.Element => {
   const { handleOpenDialog, handleCloseDialog } = useDialog();
   const { openConfirmationDialog } = useConfirmationDialog();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const tasksPerPage = 8;
 
   const fetchTasks: () => Promise<void> = async () => {
@@ -96,7 +100,7 @@ export const TaskTable = (): JSX.Element => {
   const handleTaskCreated = (response: {data: TaskType}): void => {
     handleCloseDialog();
     setPageCount(Math.ceil((totalTasks + 1)/tasksPerPage))
-    setTasks((prevTasks) => [response.data, ...prevTasks]);
+    setTasks((prevTasks) => [...prevTasks, response.data]);
     setTotalTasks(prev => prev + 1)
   };
 
@@ -173,7 +177,29 @@ export const TaskTable = (): JSX.Element => {
     }));
   };
 
-    const createTaskCellData = (task: TaskType) => ({
+  const handleUploadCsv = (): void => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await createTasksFromCsvFile(formData);
+      if (tasks.length < tasksPerPage) {
+        const updatedTasks = [...tasks, ...response.data.slice(0, tasksPerPage)];
+        setTasks(updatedTasks);
+      }
+      setPageCount(Math.ceil((totalTasks + response.data.length)/tasksPerPage));
+      setTotalTasks(prev => prev + response.data.length)
+    }
+  };
+
+  const createTaskCellData = (task: TaskType) => ({
       expandIcon: (
         <IconButton onClick={() => handleRowClick(task._id)}>
           {openDescription === task._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -211,7 +237,7 @@ export const TaskTable = (): JSX.Element => {
           </Menu>
         </React.Fragment>
       ),
-    });
+  });
 
   return (
     <Box sx={tableBoxStyles}>
@@ -223,6 +249,14 @@ export const TaskTable = (): JSX.Element => {
         />
         <SearchInputComponent
           onSearchClicked={(search) => handleTableUpdate({ search })}
+        />
+        <Button onClick={handleUploadCsv} sx={uploadCsvButtonStyles}>Add from CSV</Button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{display: 'none'}} 
+          onChange={handleFileChange} 
+          accept=".csv"
         />
       </Box>
       <TableContainer component={Paper}>
