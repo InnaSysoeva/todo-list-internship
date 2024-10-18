@@ -2,20 +2,24 @@ import React, { useState, useEffect } from "react";
 import { TaskForm } from "./TaskForm";
 import { updateTask } from "../api/taskAPI";
 import { getTaskById } from "../api/taskAPI";
-import { TaskFormInputType } from "../types/taskFormInput.type";
+import { TaskFormType } from "../types/taskForm.type";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { TaskType } from "../types/task.type";
 
 interface UpdateComponentProps {
-  onTaskUpdated: (response: any) => void;
-  taskId: string; 
+  onTaskUpdated: (response: {data: TaskType}) => void;
+  taskId: string;
 }
 
-export const UpdateComponent: React.FC<UpdateComponentProps> = ({ onTaskUpdated, taskId }) => {
-  const [task, setTask] = useState<TaskFormInputType>();
+export const UpdateComponent: React.FC<UpdateComponentProps> = ({
+  onTaskUpdated,
+  taskId,
+}) => {
+  const [task, setTask] = useState<TaskFormType>();
   const [taskState, setTaskState] = useState<number>(1);
 
-  const fetchTaskById = async () => {
+  const fetchTaskById = async (): Promise<void> => {
     const response = await getTaskById(taskId);
     const taskFormInput = {
       title: response.data.title,
@@ -32,22 +36,11 @@ export const UpdateComponent: React.FC<UpdateComponentProps> = ({ onTaskUpdated,
     fetchTaskById();
   }, []);
 
-  const handleUpdateTask = async (formData: {
-    title: string;
-    description: string;
-    priority: number;
-    dateStart: string;
-    dateEnd: string;
-  }) => {
+  const handleUpdateTask = async (formData: TaskFormType): Promise<void> => {
     const updatedTask = {
-      title: formData.title,
-      description: formData.description,
-      priority: formData.priority,
-      dateStart: formData.dateStart,
-      dateEnd: formData.dateEnd,
+      ...formData,
       state: taskState,
     };
-
     const response = await updateTask(taskId, updatedTask);
     onTaskUpdated(response);
   };

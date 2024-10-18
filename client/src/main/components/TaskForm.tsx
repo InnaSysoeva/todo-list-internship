@@ -9,11 +9,14 @@ import {
   Box,
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { TaskFormInputType } from "../types/taskFormInput.type";
+import { TaskFormType } from "../types/taskForm.type";
+import { defaultTaskFormInput } from "../constants/taskFormInput.default";
+import { formErrorMessages } from "../constants/form.messages";
+import { PriorityEnum } from "../enums/priority.enum";
 
 interface TaskFormProps {
-  onSubmit: (data: any) => void;
-  initialTask?: TaskFormInputType;
+  onSubmit: (task: TaskFormType) => void;
+  initialTask?: TaskFormType;
 }
 
 export const TaskForm: React.FC<TaskFormProps> = ({
@@ -24,18 +27,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TaskFormInputType>({
-    defaultValues: initialTask || {
-      title: "",
-      description: "",
-      dateStart: "",
-      dateEnd: "",
-      priority: 0,
-    },
+  } = useForm<TaskFormType>({
+    defaultValues: initialTask || defaultTaskFormInput,
   });
 
-  const onFormSubmit: SubmitHandler<TaskFormInputType> = (data) => {
-    onSubmit(data);
+  const onFormSubmit: SubmitHandler<TaskFormType> = (task) => {
+    onSubmit(task);
   };
 
   return (
@@ -43,25 +40,25 @@ export const TaskForm: React.FC<TaskFormProps> = ({
       <FormControl fullWidth margin="normal">
         <TextField
           label="Title"
-          {...register("title", { required: "Title is required" })}
+          {...register("title", {
+            required: formErrorMessages.required("Title"),
+          })}
           error={!!errors.title}
           helperText={errors.title?.message}
-          defaultValue={initialTask?.title || ""}
         />
       </FormControl>
-
       <FormControl fullWidth margin="normal">
         <TextField
           label="Description"
-          {...register("description", { required: "Description is required" })}
+          {...register("description", {
+            required: formErrorMessages.required("Description"),
+          })}
           multiline
           rows={4}
           error={!!errors.description}
           helperText={errors.description?.message}
-          defaultValue={initialTask?.description || ""}
         />
       </FormControl>
-
       <Box
         display="flex"
         flexDirection="row"
@@ -73,48 +70,45 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             label="Date Start"
             type="date"
             {...register("dateStart", {
-              required: "Date Start is required",
+              required: formErrorMessages.required("Date Start"),
             })}
             error={!!errors.dateStart}
             helperText={errors.dateStart?.message}
             InputLabelProps={{
               shrink: true,
             }}
-            defaultValue={initialTask?.dateStart || ""}
           />
         </FormControl>
-
         <FormControl fullWidth margin="normal">
           <TextField
             label="Date End"
             type="date"
             {...register("dateEnd", {
-              required: "Date End is required",
+              required: formErrorMessages.required("Date End"),
             })}
             error={!!errors.dateEnd}
             helperText={errors.dateEnd?.message}
             InputLabelProps={{
               shrink: true,
             }}
-            defaultValue={initialTask?.dateEnd || ""}
           />
         </FormControl>
       </Box>
-
       <FormControl fullWidth margin="normal">
         <InputLabel id="priority-label">Priority</InputLabel>
         <Select
           label="Priority"
-          {...register("priority", { required: "Priority is required" })}
-          defaultValue={initialTask?.priority || ""}
+          {...register("priority", {
+            required: formErrorMessages.required("Priority"),
+          })}
+          defaultValue={initialTask?.priority}
           error={!!errors.priority}
         >
-          <MenuItem value={1}>Low</MenuItem>
-          <MenuItem value={2}>Medium</MenuItem>
-          <MenuItem value={3}>High</MenuItem>
+          <MenuItem value={PriorityEnum.Low}>Low</MenuItem>
+          <MenuItem value={PriorityEnum.Medium}>Medium</MenuItem>
+          <MenuItem value={PriorityEnum.High}>High</MenuItem>
         </Select>
       </FormControl>
-
       <Button
         sx={{ display: "block", width: "40%", margin: "20px auto" }}
         type="submit"

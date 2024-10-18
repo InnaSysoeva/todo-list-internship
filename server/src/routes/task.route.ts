@@ -4,8 +4,9 @@ import {
   deleteTask,
   getAllTasks,
   getTaskById,
+  getTasksByPage,
   updateTask,
-  updateTaskState
+  updateTaskState,
 } from "@controllers/task.controller";
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.delete("/:id", deleteTask);
 router.get("/", getAllTasks);
 router.get("/:id", getTaskById);
 router.patch("/:id", updateTaskState);
+router.get("/sort/:limit", getTasksByPage);
 
 export default router;

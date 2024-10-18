@@ -1,7 +1,7 @@
 export type ConfirmationDialogStateType = {
   isOpen: boolean;
   title: string;
-  onConfirm: () => void; 
+  onConfirm: () => void;
 };
 
 export type ConfirmationDialogContextType = {
