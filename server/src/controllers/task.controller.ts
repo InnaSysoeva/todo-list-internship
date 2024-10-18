@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   createTaskService,
+  createTasksFromCsvFileService,
   deleteTaskService,
   getAllTasksService,
   getTaskByIdService,
@@ -179,12 +180,37 @@ export const getTasksByPage = async (
       sort: request.query.sort as SortType,
       search: request.query.search as string,
     };
-    const {totalDocuments, tasks} = await getTasksByPageService(tableParams, limit);
-    result.status(200).json({totalDocuments, tasks});
+    const { totalDocuments, tasks } = await getTasksByPageService(
+      tableParams,
+      limit,
+    );
+    result.status(200).json({ totalDocuments, tasks });
   } catch (error) {
     if (error instanceof Error) {
       return next(
         createError(500, errorMessages.notFound("Task"), {
+          details: error.message,
+        }),
+      );
+    }
+  }
+};
+
+export const createTasksFromCsvFile = async (
+  request: Request,
+  result: Response,
+  next: NextFunction,
+) => {
+  try {
+    const csvFile = request.file!;
+    const tasks = await createTasksFromCsvFileService(
+      csvFile.buffer.toString("utf-8"),
+    );
+    result.status(200).json(tasks);
+  } catch (error) {
+    if (error instanceof Error) {
+      return next(
+        createError(500, errorMessages.creation("Task"), {
           details: error.message,
         }),
       );

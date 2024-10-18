@@ -13,9 +13,10 @@ const app = express();
 const defaultPort = 5000;
 const port = process.env.PORT || defaultPort;
 
-app.use(cors({
-    origin: 'https://todo-list-internship-client.onrender.com'
-}));
+// app.use(cors({
+//     origin: 'https://todo-list-internship-client.onrender.com'
+// }));
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use("/api", taskRouter);
