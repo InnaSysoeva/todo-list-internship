@@ -17,11 +17,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import {
-  updateTaskState,
-  deleteTask,
-  getTasksByPage,
-} from "../api/taskAPI";
+import { updateTaskState, deleteTask, getTasksByPage } from "../api/taskAPI";
 import { tableBoxStyles } from "../../styles/stylesMUI/tableBox.styles";
 import { fabStyles } from "../../styles/stylesMUI/fab.styles";
 import { CreateComponent } from "./CreateComponent";
@@ -49,10 +45,12 @@ import {
   Add as AddIcon,
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
-import { cellWidths, tableCellStyles } from "../../styles/stylesMUI/tableCell.styles";
+import {
+  cellWidths,
+  tableCellStyles,
+} from "../../styles/stylesMUI/tableCell.styles";
 import { dateBoxStyles } from "../../styles/stylesMUI/dateBox.styles";
 import { CellTaskDataType } from "../types/cellTaskData.type";
-
 
 export const TaskTable = (): JSX.Element => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -60,20 +58,20 @@ export const TaskTable = (): JSX.Element => {
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [openDescription, setOpenDescription] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [totalTasks, setTotalTasks] = useState<number>(0)
+  const [totalTasks, setTotalTasks] = useState<number>(0);
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
   const { handleOpenDialog, handleCloseDialog } = useDialog();
   const { openConfirmationDialog } = useConfirmationDialog();
   const navigate = useNavigate();
-  const isSmallScreen = useMediaQuery('(max-width:900px)')
+  const isSmallScreen = useMediaQuery("(max-width:900px)");
   const tasksPerPage = 8;
 
   const fetchTasks: () => Promise<void> = async () => {
     const response = await getTasksByPage(defaultTableParams, tasksPerPage);
-    const {totalDocuments, tasks} = response.data;
+    const { totalDocuments, tasks } = response.data;
     setTasks(tasks);
-    setPageCount(Math.ceil(totalDocuments/tasksPerPage));
+    setPageCount(Math.ceil(totalDocuments / tasksPerPage));
   };
 
   useEffect(() => {
@@ -98,18 +96,20 @@ export const TaskTable = (): JSX.Element => {
     setSelectedTask(null);
   };
 
-  const handleTaskCreated = (response: {data: TaskType}): void => {
+  const handleTaskCreated = (response: { data: TaskType }): void => {
     handleCloseDialog();
-    setPageCount(Math.ceil((totalTasks + 1)/tasksPerPage))
+    setPageCount(Math.ceil((totalTasks + 1) / tasksPerPage));
     setTasks((prevTasks) => [response.data, ...prevTasks]);
-    setTotalTasks(prev => prev + 1)
+    setTotalTasks((prev) => prev + 1);
   };
 
-  const handleTaskUpdated = (response: {data: TaskType}): void => {
+  const handleTaskUpdated = (response: { data: TaskType }): void => {
     handleCloseDialog();
     const updatedTask = response.data;
     setTasks((prevTasks) =>
-      prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task)),
+      prevTasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task,
+      ),
     );
   };
 
@@ -151,8 +151,8 @@ export const TaskTable = (): JSX.Element => {
       try {
         await deleteTask(id);
         setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
-        setPageCount(Math.ceil((totalTasks - 1)/tasksPerPage))
-        setTotalTasks(prev => prev + 1)
+        setPageCount(Math.ceil((totalTasks - 1) / tasksPerPage));
+        setTotalTasks((prev) => prev + 1);
       } catch (error) {}
     });
   };
@@ -166,11 +166,11 @@ export const TaskTable = (): JSX.Element => {
       ...newParams,
     };
 
-    const response = await getTasksByPage(combinedParams, tasksPerPage)
-    const {totalDocuments, tasks} = response.data;
+    const response = await getTasksByPage(combinedParams, tasksPerPage);
+    const { totalDocuments, tasks } = response.data;
     setTasks(tasks);
     setTotalTasks(totalDocuments);
-    setPageCount(Math.ceil(totalDocuments/tasksPerPage));
+    setPageCount(Math.ceil(totalDocuments / tasksPerPage));
 
     setTableParams((prevParams) => ({
       ...prevParams,
@@ -178,56 +178,71 @@ export const TaskTable = (): JSX.Element => {
     }));
   };
 
-    const createTaskCellData = (task: TaskType): CellTaskDataType => {
-      return {
-      expandIcon: (
-        <IconButton onClick={() => handleRowClick(task._id)}>
-          {openDescription === task._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
-      ),
-      title: ( <Box>{task.title}</Box> ),
-      dateStart: isSmallScreen ? (
-        <Box sx={{ display: 'none' }}></Box>
-      ) : (
-        <Chip color="primary" label={task.dateStart} />
-      ),
-      dateEnd: isSmallScreen ? (
-        <Box sx={{ display: 'none' }}></Box>
-      ) : (
-        <Chip color="primary" label={task.dateEnd} />
-      ),
-      stateChip: (
-        <TaskStateChip
-          initialState={task.state}
-          onStateChange={(newStateIndex: number) => handleStateChange(task._id, newStateIndex)}
-        />
-      ),
-      actions: (
-        <React.Fragment>
-          <IconButton sx={{ ml: "5px" }} onClick={(event) => handleMenuOpen(event, task)}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorElement}
-            open={Boolean(anchorElement)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => selectedTask && handleUpdateTask(selectedTask._id)}>
-              <EditIcon fontSize="small" /> Update
-            </MenuItem>
-            <MenuItem onClick={() => selectedTask && handleDeleteTask(selectedTask._id)}>
-              <DeleteIcon fontSize="small" /> Delete
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
-      ),
-    }};
+  const renderExpandIcon = (taskId: string) => (
+    <IconButton onClick={() => handleRowClick(taskId)}>
+      {openDescription === taskId ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+    </IconButton>
+  );
+
+  const renderTitle = (title: string) => <Box>{title}</Box>;
+
+  const renderDate = (isSmallScreen: boolean, date: string) =>
+    isSmallScreen ? (
+      <Box sx={{ display: "none" }}></Box>
+    ) : (
+      <Chip color="primary" label={date} />
+    );
+
+  const renderStateChip = (taskId: string, initialState: number) => (
+    <TaskStateChip
+      initialState={initialState}
+      onStateChange={(newStateIndex: number) =>
+        handleStateChange(taskId, newStateIndex)
+      }
+    />
+  );
+
+  const renderActions = (task: TaskType) => (
+    <>
+      <IconButton
+        sx={{ ml: "5px" }}
+        onClick={(event) => handleMenuOpen(event, task)}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchorElement}
+        open={Boolean(anchorElement)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => selectedTask && handleUpdateTask(selectedTask._id)}
+        >
+          <EditIcon fontSize="small" /> Update
+        </MenuItem>
+        <MenuItem
+          onClick={() => selectedTask && handleDeleteTask(selectedTask._id)}
+        >
+          <DeleteIcon fontSize="small" /> Delete
+        </MenuItem>
+      </Menu>
+    </>
+  );
+
+  const createTaskCellData = (task: TaskType): CellTaskDataType => {
+    return {
+      expandIcon: renderExpandIcon(task._id),
+      title: renderTitle(task.title),
+      dateStart: renderDate(isSmallScreen, task.dateStart),
+      dateEnd: renderDate(isSmallScreen, task.dateEnd),
+      stateChip: renderStateChip(task._id, task.state),
+      actions: renderActions(task),
+    };
+  };
 
   return (
     <Box sx={tableBoxStyles}>
-      <Box
-        sx={tabsBoxStyles}
-      >
+      <Box sx={tabsBoxStyles}>
         <CustomTabs
           onFilterClicked={(filter) => handleTableUpdate({ filter })}
         />
@@ -240,29 +255,53 @@ export const TaskTable = (): JSX.Element => {
           <TableHeader onSortClicked={(sort) => handleTableUpdate({ sort })} />
           <TableBody>
             {tasks.map((task) => {
-              const cellData = createTaskCellData(task); 
+              const cellData = createTaskCellData(task);
               return (
                 <React.Fragment>
                   <TableRow key={task._id}>
-                      {Object.values(cellData).map((value, index) => (
-                        <TableCell sx={{...tableCellStyles, 
+                    {Object.values(cellData).map((value, index) => (
+                      <TableCell
+                        sx={{
+                          ...tableCellStyles,
                           width: cellWidths[index],
-                          textAlign: index === 1 ? 'left' : 'center'}} key={index}>{value}</TableCell>
-                      ))}
+                          textAlign: index === 1 ? "left" : "center",
+                        }}
+                        key={index}
+                      >
+                        {value}
+                      </TableCell>
+                    ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={6} sx={{paddingBottom: 0, paddingTop: 0 }}>
+                    <TableCell
+                      colSpan={6}
+                      sx={{ paddingBottom: 0, paddingTop: 0 }}
+                    >
                       <Collapse in={openDescription === task._id}>
                         {isSmallScreen && (
                           <Box sx={dateBoxStyles}>
-                            <Typography sx={{ fontSize: '14px' }}>Date Start: {task.dateStart}</Typography>
-                            <Typography sx={{ fontSize: '14px' }}>Date End: {task.dateEnd}</Typography>
+                            <Typography sx={{ fontSize: "14px" }}>
+                              Date Start: {task.dateStart}
+                            </Typography>
+                            <Typography sx={{ fontSize: "14px" }}>
+                              Date End: {task.dateEnd}
+                            </Typography>
                           </Box>
                         )}
-                         <Box sx={{ pl: "10px", pr: "10px", textAlign: 'justify'}}>
-                          <Typography sx={{fontSize: '15px', mt: "10px", textAlign: "left"}}>Additional Details:</Typography>
+                        <Box
+                          sx={{ pl: "10px", pr: "10px", textAlign: "justify" }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: "15px",
+                              mt: "10px",
+                              textAlign: "left",
+                            }}
+                          >
+                            Additional Details:
+                          </Typography>
                           <Box>{task.description}</Box>
-                         </Box>
+                        </Box>
                       </Collapse>
                     </TableCell>
                   </TableRow>

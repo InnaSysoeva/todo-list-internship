@@ -16,17 +16,22 @@ interface Header {
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({ onSortClicked }) => {
-  const createInitialOrder = (headers: Header[]): { [key: string]: SortOrder } => {
-    return headers.reduce((acc, header) => {
-      if (header.sortable) {
-        acc[header.label] = SortOrder.None;
-      }
-      return acc;
-    }, {} as { [key: string]: SortOrder });
+  const createInitialOrder = (
+    headers: Header[],
+  ): { [key: string]: SortOrder } => {
+    return headers.reduce(
+      (acc, header) => {
+        if (header.sortable) {
+          acc[header.label] = SortOrder.None;
+        }
+        return acc;
+      },
+      {} as { [key: string]: SortOrder },
+    );
   };
 
   const [order, setOrder] = useState<{ [key: string]: SortOrder }>(
-    createInitialOrder(headers)
+    createInitialOrder(headers),
   );
 
   const handleSortClick = (header: string): void => {
@@ -56,9 +61,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ onSortClicked }) => {
                 active={order[header.label] !== SortOrder.None}
                 direction={
                   order[header.label] === SortOrder.Ascending
-                    ? "asc"
+                    ? SortOrder.Ascending
                     : order[header.label] === SortOrder.Descending
-                      ? "desc"
+                      ? SortOrder.Descending
                       : undefined
                 }
                 onClick={() => handleSortClick(header.label)}

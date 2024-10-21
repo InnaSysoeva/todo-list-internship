@@ -7,5 +7,5 @@ export const tableBoxStyles: SxProps = {
   alignItems: "center",
   flexDirection: "column",
   width: "80%",
-  marginTop: {xs: '20px', md: '40px'}
+  marginTop: { xs: "20px", md: "40px" },
 };
