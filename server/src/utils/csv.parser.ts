@@ -15,8 +15,7 @@ const isRowValid = (
   headers: (string | undefined)[],
 ): boolean => {
   return (
-    Object.values(row).filter((value) => value.toString().trim() !== "")
-      .length === headers.length
+    Object.values(row).filter((value) => value).length === headers.length
   );
 };
 
