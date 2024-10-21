@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -65,7 +65,6 @@ export const TaskTable = (): JSX.Element => {
   const { handleOpenDialog, handleCloseDialog } = useDialog();
   const { openConfirmationDialog } = useConfirmationDialog();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const tasksPerPage = 8;
 
   const fetchTasks: () => Promise<void> = async () => {
@@ -178,20 +177,22 @@ export const TaskTable = (): JSX.Element => {
   };
 
   const handleUploadCsv = (): void => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    const inputElement = document.getElementById('csv-input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.click();
     }
   }
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files = event.target.files;
-    if (files && files.length > 0) {
+    if (files && files.length) {
       const file = files[0];
       const formData = new FormData();
       formData.append('file', file);
       const response = await createTasksFromCsvFile(formData);
       if (tasks.length < tasksPerPage) {
         const updatedTasks = [...tasks, ...response.data.slice(0, tasksPerPage)];
+
         setTasks(updatedTasks);
       }
       setPageCount(Math.ceil((totalTasks + response.data.length)/tasksPerPage));
@@ -253,7 +254,7 @@ export const TaskTable = (): JSX.Element => {
         <Button onClick={handleUploadCsv} sx={uploadCsvButtonStyles}>Add from CSV</Button>
         <input
           type="file"
-          ref={fileInputRef}
+          id="csv-input"
           style={{display: 'none'}} 
           onChange={handleFileChange} 
           accept=".csv"
