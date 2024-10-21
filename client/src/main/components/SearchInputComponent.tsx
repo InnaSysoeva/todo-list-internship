@@ -30,7 +30,11 @@ export const SearchInputComponent: React.FC<SearchInputProps> = ({
         placeholder="Search for task..."
       />
       <Tooltip title="Search">
-        <Button onClick={handleSearchClick} type="button" sx={searchButtonStyles}>
+        <Button
+          onClick={handleSearchClick}
+          type="button"
+          sx={searchButtonStyles}
+        >
           <SearchIcon />
         </Button>
       </Tooltip>

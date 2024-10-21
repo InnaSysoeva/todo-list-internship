@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Pagination, Stack } from "@mui/material";
+import { firstPage } from "../constants/firstPage.default";
 
 interface CustomPaginationProps {
   pageCount: number;
@@ -10,7 +11,7 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
   pageCount,
   onPageChange,
 }) => {
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(firstPage);
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,

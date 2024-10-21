@@ -5,6 +5,9 @@ export const tableHeaderStyles: SxProps = {
   fontSize: "14px",
   position: "relative",
   whiteSpace: "nowrap",
+  "@media (max-width: 900px)": {
+    display: "none",
+  },
   "&:not(:last-child)": {
     "::after": {
       content: '""',
