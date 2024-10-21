@@ -1,6 +1,8 @@
 import { TaskModel } from "@models/task.model";
 import { SortOrder } from "enums/sortOrder.enum";
 import { TaskStateEnum } from "@models/task.model";
+import { TaskType } from "types/task.type";
+import { parseCSV } from "@utils/csv.parser";
 
 export const createTaskService = async (task: any) => {
   const newTask = new TaskModel(task);
@@ -71,12 +73,18 @@ export const getTasksByPageService = async (
   if (sort && sort.order !== SortOrder.None) {
     query.sort({ [sort.field]: sort.order });
   }
-  
+
   const totalDocuments = await query.clone().countDocuments();
   const tasks = await query.limit(limit).skip((page - 1) * limit);
 
   return {
     totalDocuments,
-    tasks
+    tasks,
   };
+};
+
+export const createTasksFromCsvFileService = async (csvData: string) => {
+  const parsedTasks = await parseCSV(csvData);
+
+  return await TaskModel.insertMany(parsedTasks);
 };
