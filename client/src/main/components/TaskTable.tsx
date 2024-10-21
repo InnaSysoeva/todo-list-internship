@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -64,6 +64,7 @@ export const TaskTable = (): JSX.Element => {
     useState<TableParams>(defaultTableParams);
   const { handleOpenDialog, handleCloseDialog } = useDialog();
   const { openConfirmationDialog } = useConfirmationDialog();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const tasksPerPage = 8;
 
@@ -177,9 +178,8 @@ export const TaskTable = (): JSX.Element => {
   };
 
   const handleUploadCsv = (): void => {
-    const inputElement = document.getElementById('csv-input') as HTMLInputElement;
-    if (inputElement) {
-      inputElement.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   }
 
@@ -254,7 +254,7 @@ export const TaskTable = (): JSX.Element => {
         <Button onClick={handleUploadCsv} sx={uploadCsvButtonStyles}>Add from CSV</Button>
         <input
           type="file"
-          id="csv-input"
+          ref={fileInputRef}
           style={{display: 'none'}} 
           onChange={handleFileChange} 
           accept=".csv"
