@@ -4,8 +4,8 @@ export const fabStyles: SxProps = {
   backgroundColor: "primary.dark",
   color: "white",
   position: "absolute",
-  bottom: 20,
-  right: -100,
+  top: 600,
+  right: 45,
   "&:hover": {
     backgroundColor: "secondary.dark",
   },

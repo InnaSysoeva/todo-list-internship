@@ -6,9 +6,10 @@ import { TaskFormType } from "../types/taskForm.type";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { TaskType } from "../types/task.type";
+import { StateEnum } from "../enums/state.enum";
 
 interface UpdateComponentProps {
-  onTaskUpdated: (response: {data: TaskType}) => void;
+  onTaskUpdated: (response: { data: TaskType }) => void;
   taskId: string;
 }
 
@@ -17,7 +18,7 @@ export const UpdateComponent: React.FC<UpdateComponentProps> = ({
   taskId,
 }) => {
   const [task, setTask] = useState<TaskFormType>();
-  const [taskState, setTaskState] = useState<number>(1);
+  const [taskState, setTaskState] = useState<number>(StateEnum.Active);
 
   const fetchTaskById = async (): Promise<void> => {
     const response = await getTaskById(taskId);
