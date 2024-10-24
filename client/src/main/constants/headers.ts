@@ -4,10 +4,9 @@ interface Header {
 }
 
 export const headers: Header[] = [
-  { label: "More", sortable: false },
   { label: "Task", sortable: true },
-  { label: "Date Start", sortable: true },
-  { label: "Date End", sortable: true },
+  { label: "Start", sortable: true },
+  { label: "End", sortable: true },
   { label: "State", sortable: false },
-  { label: "Actions", sortable: false },
+  { label: "More", sortable: false },
 ];

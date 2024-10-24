@@ -5,9 +5,7 @@ export const tableHeaderStyles: SxProps = {
   fontSize: "14px",
   position: "relative",
   whiteSpace: "nowrap",
-  "@media (max-width: 900px)": {
-    display: "none",
-  },
+  padding: "8px",
   "&:not(:last-child)": {
     "::after": {
       content: '""',
@@ -19,5 +17,11 @@ export const tableHeaderStyles: SxProps = {
       width: "1px",
       backgroundColor: "rgba(224, 224, 224, 1)",
     },
+  },
+  "@media (max-width: 900px)": {
+    mr: "0px",
+    ml: "0px",
+    pl: "2px",
+    pr: "2px",
   },
 };

@@ -1,16 +1,14 @@
 import { SxProps } from "@mui/material";
 
-export const tabsBoxStyles: SxProps = {
+export const buttonBoxStyles: SxProps = {
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between",
+  justifyContent: "center",
   alignItems: "center",
-  width: "100%",
-  gap: "10px",
+  gap: "20px",
   "@media (max-width: 1230px)": {
-    marginBottom: "5px",
-    flexDirection: "column",
     justifyContent: "center",
-    gap: "0px",
+    marginBottom: "5px",
+    marginTop: "5px",
   },
 };

@@ -48,7 +48,9 @@ export const UpdateComponent: React.FC<UpdateComponentProps> = ({
 
   if (!task) {
     return (
-      <Box sx={{ display: "flex" }}>
+      <Box
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
         <CircularProgress />
       </Box>
     );

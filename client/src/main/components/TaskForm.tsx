@@ -26,6 +26,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<TaskFormType>({
     defaultValues: initialTask || defaultTaskFormInput,
@@ -34,6 +35,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   const onFormSubmit: SubmitHandler<TaskFormType> = (task) => {
     onSubmit(task);
   };
+
+  const dateStart = watch("dateStart");
+  const dateEnd = watch("dateEnd");
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)}>
@@ -71,6 +75,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             type="date"
             {...register("dateStart", {
               required: formErrorMessages.required("Date Start"),
+              validate: {
+                notAfterEndDate: (value) =>
+                  !dateEnd ||
+                  new Date(value) <= new Date(dateEnd) ||
+                  formErrorMessages.dateValidation("Date Start"),
+              },
             })}
             error={!!errors.dateStart}
             helperText={errors.dateStart?.message}
@@ -85,6 +95,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             type="date"
             {...register("dateEnd", {
               required: formErrorMessages.required("Date End"),
+              validate: {
+                notBeforeStartDate: (value) =>
+                  !dateStart ||
+                  new Date(value) >= new Date(dateStart) ||
+                  formErrorMessages.dateValidation("Date End"),
+              },
             })}
             error={!!errors.dateEnd}
             helperText={errors.dateEnd?.message}
@@ -110,12 +126,17 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         </Select>
       </FormControl>
       <Button
-        sx={{ display: "block", width: "40%", margin: "20px auto" }}
+        sx={{
+          display: "block",
+          width: "20%",
+          margin: "5px auto",
+          color: "white",
+          backgroundColor: "primary.dark",
+        }}
         type="submit"
         variant="contained"
-        color="primary"
       >
-        Confirm
+        Save
       </Button>
     </form>
   );

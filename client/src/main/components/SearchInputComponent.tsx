@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Input, Button, Tooltip } from "@mui/material";
+import { Box, TextField, Button, Tooltip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   searchInputStyles,
@@ -21,13 +21,15 @@ export const SearchInputComponent: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Input
+    <Box
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
+      <TextField
         value={input}
         onChange={(event) => setInput(event.target.value)}
         sx={searchInputStyles}
+        label="Search for task..."
         size="small"
-        placeholder="Search for task..."
       />
       <Tooltip title="Search">
         <Button

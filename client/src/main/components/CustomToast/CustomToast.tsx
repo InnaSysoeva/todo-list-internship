@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Snackbar, Alert } from "@mui/material";
 import { useToast } from "../../hooks/useToast";
 import CloseIcon from "@mui/icons-material/Close";

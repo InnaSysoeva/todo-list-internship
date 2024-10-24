@@ -6,7 +6,11 @@ export const CustomDialog = (): JSX.Element => {
   const { dialog, handleCloseDialog } = useDialog();
 
   return (
-    <Dialog open={dialog.isOpen} onClose={handleCloseDialog}>
+    <Dialog
+      sx={{ width: "35%", margin: "auto" }}
+      open={dialog.isOpen}
+      onClose={handleCloseDialog}
+    >
       <DialogTitle sx={{ display: "block", margin: "auto" }}>
         {dialog.title}
       </DialogTitle>

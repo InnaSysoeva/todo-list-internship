@@ -50,8 +50,10 @@ export const getTasksByPage = async (
   return await $host.get(`/sort/${limit}`, { params: tableParams });
 };
 
-export const createTasksFromCsvFile = async (file: FormData):Promise<AxiosResponse<TaskType[]>> => {
-  return await $host.post('/upload', file, {
-    headers: {'Content-Type': 'multipart/form-data'}
-  })
-}
+export const createTasksFromCsvFile = async (
+  file: FormData,
+): Promise<AxiosResponse<TaskType[]>> => {
+  return await $host.post("/upload", file, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};

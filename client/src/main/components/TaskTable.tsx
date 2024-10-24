@@ -11,21 +11,16 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Chip,
-  Fab,
   Collapse,
-  Typography,
-  useMediaQuery,
-  Button
+  Button,
 } from "@mui/material";
 import {
   updateTaskState,
   deleteTask,
   getTasksByPage,
-  createTasksFromCsvFile
+  createTasksFromCsvFile,
 } from "../api/taskAPI";
 import { tableBoxStyles } from "../../styles/stylesMUI/tableBox.styles";
-import { fabStyles } from "../../styles/stylesMUI/fab.styles";
 import { CreateComponent } from "./CreateComponent";
 import { UpdateComponent } from "./UpdateComponent";
 import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
@@ -48,17 +43,29 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   MoreVert as MoreVertIcon,
-  Add as AddIcon,
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
-import { uploadCsvButtonStyles } from "../../styles/stylesMUI/uploadCsvButton.styles";
+import { buttonStyles } from "../../styles/stylesMUI/button.styles";
 import {
   cellWidths,
   tableCellStyles,
 } from "../../styles/stylesMUI/tableCell.styles";
-import { dateBoxStyles } from "../../styles/stylesMUI/dateBox.styles";
 import { CellTaskDataType } from "../types/cellTaskData.type";
-
+import { CustomToast } from "./CustomToast/CustomToast";
+import { useToast } from "../hooks/useToast";
+import { ToastSeverity } from "../enums/customToast.enums";
+import {
+  toastErrorMessages,
+  toastSuccessMessages,
+} from "../constants/customToast.messages";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { getPriorityIcon } from "../constants/priority.icons";
+import { expandIconStyles } from "../../styles/stylesMUI/expandIcon.styles";
+import { buttonBoxStyles } from "../../styles/stylesMUI/buttonBox.styles";
+import CircularProgress from "@mui/material/CircularProgress";
+import { tableStyles } from "../../styles/stylesMUI/table.styles";
+import { buttonIconStyles } from "../../styles/stylesMUI/buttonIcons.styles";
 
 export const TaskTable = (): JSX.Element => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -73,14 +80,26 @@ export const TaskTable = (): JSX.Element => {
   const { openConfirmationDialog } = useConfirmationDialog();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const isSmallScreen = useMediaQuery("(max-width:900px)");
-  const tasksPerPage = 8;
+  const { handleOpenToast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const toastDuration = 10000;
+  const tasksPerPage = 10;
 
   const fetchTasks: () => Promise<void> = async () => {
-    const response = await getTasksByPage(defaultTableParams, tasksPerPage);
-    const { totalDocuments, tasks } = response.data;
-    setTasks(tasks);
-    setPageCount(Math.ceil(totalDocuments / tasksPerPage));
+    try {
+      const response = await getTasksByPage(defaultTableParams, tasksPerPage);
+      const { totalDocuments, tasks } = response.data;
+      setTasks(tasks);
+      setPageCount(Math.ceil(totalDocuments / tasksPerPage));
+    } catch (error) {
+      handleOpenToast(
+        toastErrorMessages.internalServerError("fetching tasks"),
+        toastDuration,
+        ToastSeverity.ERROR,
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -107,9 +126,14 @@ export const TaskTable = (): JSX.Element => {
 
   const handleTaskCreated = (response: { data: TaskType }): void => {
     handleCloseDialog();
-    setPageCount(Math.ceil((totalTasks + 1)/tasksPerPage))
+    setPageCount(Math.ceil((totalTasks + 1) / tasksPerPage));
     setTasks((prevTasks) => [...prevTasks, response.data]);
-    setTotalTasks(prev => prev + 1)
+    setTotalTasks((prev) => prev + 1);
+    handleOpenToast(
+      toastSuccessMessages.creation("Task"),
+      toastDuration,
+      ToastSeverity.SUCCESS,
+    );
   };
 
   const handleTaskUpdated = (response: { data: TaskType }): void => {
@@ -119,6 +143,11 @@ export const TaskTable = (): JSX.Element => {
       prevTasks.map((task) =>
         task._id === updatedTask._id ? updatedTask : task,
       ),
+    );
+    handleOpenToast(
+      toastSuccessMessages.update("Task"),
+      toastDuration,
+      ToastSeverity.SUCCESS,
     );
   };
 
@@ -132,15 +161,31 @@ export const TaskTable = (): JSX.Element => {
 
   const openDialog = (taskId?: string): void => {
     if (taskId) {
-      handleOpenDialog(
-        "Update Task",
-        <UpdateComponent onTaskUpdated={handleTaskUpdated} taskId={taskId} />,
-      );
+      try {
+        handleOpenDialog(
+          "Update Task",
+          <UpdateComponent onTaskUpdated={handleTaskUpdated} taskId={taskId} />,
+        );
+      } catch (error) {
+        handleOpenToast(
+          toastErrorMessages.update("Task"),
+          toastDuration,
+          ToastSeverity.ERROR,
+        );
+      }
     } else {
-      handleOpenDialog(
-        "Add New Task",
-        <CreateComponent onTaskCreated={handleTaskCreated} />,
-      );
+      try {
+        handleOpenDialog(
+          "Add New Task",
+          <CreateComponent onTaskCreated={handleTaskCreated} />,
+        );
+      } catch (error) {
+        handleOpenToast(
+          toastSuccessMessages.creation("Task"),
+          toastDuration,
+          ToastSeverity.WARNING,
+        );
+      }
     }
   };
 
@@ -162,7 +207,18 @@ export const TaskTable = (): JSX.Element => {
         setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
         setPageCount(Math.ceil((totalTasks - 1) / tasksPerPage));
         setTotalTasks((prev) => prev + 1);
-      } catch (error) {}
+        handleOpenToast(
+          toastSuccessMessages.deletion("Task"),
+          toastDuration,
+          ToastSeverity.SUCCESS,
+        );
+      } catch (error) {
+        handleOpenToast(
+          toastErrorMessages.deletion("Task"),
+          toastDuration,
+          ToastSeverity.ERROR,
+        );
+      }
     });
   };
 
@@ -191,39 +247,65 @@ export const TaskTable = (): JSX.Element => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  }
+  };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): Promise<void> => {
     const files = event.target.files;
     if (files && files.length) {
       const file = files[0];
       const formData = new FormData();
-      formData.append('file', file);
-      const response = await createTasksFromCsvFile(formData);
-      if (tasks.length < tasksPerPage) {
-        const updatedTasks = [...tasks, ...response.data.slice(0, tasksPerPage)];
+      formData.append("file", file);
+      try {
+        const response = await createTasksFromCsvFile(formData);
+        if (tasks.length < tasksPerPage) {
+          const updatedTasks = [
+            ...tasks,
+            ...response.data.slice(0, tasksPerPage),
+          ];
 
-        setTasks(updatedTasks);
+          setTasks(updatedTasks);
+        }
+        setPageCount(
+          Math.ceil((totalTasks + response.data.length) / tasksPerPage),
+        );
+        setTotalTasks((prev) => prev + response.data.length);
+        handleOpenToast(
+          toastSuccessMessages.creation("Tasks from CSV file"),
+          toastDuration,
+          ToastSeverity.SUCCESS,
+        );
+      } catch (error) {
+        handleOpenToast(
+          toastErrorMessages.internalServerError("parsing uploaded file"),
+          toastDuration,
+          ToastSeverity.ERROR,
+        );
       }
-      setPageCount(Math.ceil((totalTasks + response.data.length)/tasksPerPage));
-      setTotalTasks(prev => prev + response.data.length)
     }
   };
 
-  const renderExpandIcon = (taskId: string) => (
-    <IconButton onClick={() => handleRowClick(taskId)}>
-      {openDescription === taskId ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-    </IconButton>
+  const renderTitle = (title: string, priority: number, taskId: string) => (
+    <Box sx={{ display: "flex", alignItems: "center", padding: "0px" }}>
+      <IconButton
+        sx={{ padding: "0px" }}
+        onClick={() => handleRowClick(taskId)}
+      >
+        {openDescription === taskId ? (
+          <ExpandLessIcon sx={expandIconStyles} />
+        ) : (
+          <ExpandMoreIcon sx={expandIconStyles} />
+        )}
+      </IconButton>
+      {getPriorityIcon(priority)}
+      {title}
+    </Box>
   );
 
-  const renderTitle = (title: string) => <Box>{title}</Box>;
-
-  const renderDate = (isSmallScreen: boolean, date: string) =>
-    isSmallScreen ? (
-      <Box sx={{ display: "none" }}></Box>
-    ) : (
-      <Chip color="primary" label={date} />
-    );
+  const renderDate = (date: string) => (
+    <Box sx={{ fontSize: { xs: "13px", md: "14px" } }}>{date}</Box>
+  );
 
   const renderStateChip = (taskId: string, initialState: number) => (
     <TaskStateChip
@@ -237,7 +319,7 @@ export const TaskTable = (): JSX.Element => {
   const renderActions = (task: TaskType) => (
     <>
       <IconButton
-        sx={{ ml: "5px" }}
+        sx={{ padding: "0px" }}
         onClick={(event) => handleMenuOpen(event, task)}
       >
         <MoreVertIcon />
@@ -263,13 +345,70 @@ export const TaskTable = (): JSX.Element => {
 
   const createTaskCellData = (task: TaskType): CellTaskDataType => {
     return {
-      expandIcon: renderExpandIcon(task._id),
-      title: renderTitle(task.title),
-      dateStart: renderDate(isSmallScreen, task.dateStart),
-      dateEnd: renderDate(isSmallScreen, task.dateEnd),
+      title: renderTitle(task.title, task.priority, task._id),
+      dateStart: renderDate(task.dateStart),
+      dateEnd: renderDate(task.dateEnd),
       stateChip: renderStateChip(task._id, task.state),
       actions: renderActions(task),
     };
+  };
+
+  const renderTasks = () => {
+    if (tasks.length === 0 && !isLoading) {
+      return (
+        <TableRow>
+          <TableCell colSpan={cellWidths.length} sx={{ textAlign: "center" }}>
+            Not Found
+          </TableCell>
+        </TableRow>
+      );
+    } else if (isLoading) {
+      return (
+        <TableRow>
+          <TableCell colSpan={cellWidths.length} sx={{ textAlign: "center" }}>
+            <CircularProgress />
+          </TableCell>
+        </TableRow>
+      );
+    } else {
+      return tasks.map((task) => {
+        const cellData = createTaskCellData(task);
+        return (
+          <React.Fragment>
+            <TableRow key={task._id}>
+              {Object.values(cellData).map((value, index) => (
+                <TableCell
+                  sx={{
+                    ...tableCellStyles,
+                    width: cellWidths[index],
+                    textAlign: index === 0 ? "left" : "center",
+                  }}
+                  key={index}
+                >
+                  {value}
+                </TableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={6} sx={{ paddingBottom: 0, paddingTop: 0 }}>
+                <Collapse in={openDescription === task._id}>
+                  <Box
+                    sx={{
+                      fontSize: "14px",
+                      pl: "10px",
+                      pr: "10px",
+                      textAlign: "justify",
+                    }}
+                  >
+                    {task.description}
+                  </Box>
+                </Collapse>
+              </TableCell>
+            </TableRow>
+          </React.Fragment>
+        );
+      });
+    }
   };
 
   return (
@@ -281,84 +420,34 @@ export const TaskTable = (): JSX.Element => {
         <SearchInputComponent
           onSearchClicked={(search) => handleTableUpdate({ search })}
         />
-        <Button onClick={handleUploadCsv} sx={uploadCsvButtonStyles}>Add from CSV</Button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{display: 'none'}} 
-          onChange={handleFileChange} 
-          accept=".csv"
-        />
+        <Box sx={buttonBoxStyles}>
+          <Button onClick={handleUploadCsv} sx={buttonStyles}>
+            Upload CSV <UploadFileIcon sx={buttonIconStyles} />
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+            accept=".csv"
+          />
+          <Button onClick={handleCreateTask} sx={buttonStyles}>
+            Add New <AddTaskIcon sx={buttonIconStyles} />
+          </Button>
+        </Box>
       </Box>
       <TableContainer component={Paper}>
-        <Table sx={{ backgroundColor: "secondary.main" }}>
+        <Table sx={tableStyles}>
           <TableHeader onSortClicked={(sort) => handleTableUpdate({ sort })} />
-          <TableBody>
-            {tasks.map((task) => {
-              const cellData = createTaskCellData(task);
-              return (
-                <React.Fragment>
-                  <TableRow key={task._id}>
-                    {Object.values(cellData).map((value, index) => (
-                      <TableCell
-                        sx={{
-                          ...tableCellStyles,
-                          width: cellWidths[index],
-                          textAlign: index === 1 ? "left" : "center",
-                        }}
-                        key={index}
-                      >
-                        {value}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      sx={{ paddingBottom: 0, paddingTop: 0 }}
-                    >
-                      <Collapse in={openDescription === task._id}>
-                        {isSmallScreen && (
-                          <Box sx={dateBoxStyles}>
-                            <Typography sx={{ fontSize: "14px" }}>
-                              Date Start: {task.dateStart}
-                            </Typography>
-                            <Typography sx={{ fontSize: "14px" }}>
-                              Date End: {task.dateEnd}
-                            </Typography>
-                          </Box>
-                        )}
-                        <Box
-                          sx={{ pl: "10px", pr: "10px", textAlign: "justify" }}
-                        >
-                          <Typography
-                            sx={{
-                              fontSize: "15px",
-                              mt: "10px",
-                              textAlign: "left",
-                            }}
-                          >
-                            Additional Details:
-                          </Typography>
-                          <Box>{task.description}</Box>
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </React.Fragment>
-              );
-            })}
-          </TableBody>
+          <TableBody>{renderTasks()}</TableBody>
         </Table>
       </TableContainer>
       <CustomPagination
         pageCount={pageCount}
         onPageChange={(page) => handleTableUpdate({ page })}
       />
-      <Fab onClick={handleCreateTask} sx={fabStyles}>
-        <AddIcon />
-      </Fab>
       <ConfirmationDialog />
+      <CustomToast />
     </Box>
   );
 };
