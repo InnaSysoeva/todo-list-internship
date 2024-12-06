@@ -1,12 +1,13 @@
 import { SxProps } from "@mui/material";
 
-export const fabStyles: SxProps = {
+export const buttonStyles: SxProps = {
   backgroundColor: "primary.dark",
   color: "white",
-  position: "absolute",
-  top: 600,
-  right: 45,
+  textTransform: "capitalize",
+  fontSize: "14px",
   "&:hover": {
     backgroundColor: "secondary.dark",
   },
+  ml: "5px",
+  padding: "6px 10px",
 };

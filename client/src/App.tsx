@@ -5,8 +5,8 @@ import { mainTheme } from "./styles/stylesMUI/mainTheme";
 import { ThemeProvider } from "@mui/material";
 import { CustomDialogProvider } from "./main/components/CustomDialog/CustomDialogProvider";
 import { CustomToastProvider } from "./main/components/CustomToast/CustomToastProvider";
-import "./styles/App.css";
 import { ConfirmationDialogProvider } from "./main/components/ConfirmationDialog/ConfirmationDialogProvider";
+import "./styles/App.css";
 
 function App() {
   return (
@@ -14,11 +14,13 @@ function App() {
       <ThemeProvider theme={mainTheme}>
         <CustomDialogProvider>
           <ConfirmationDialogProvider>
-            <Routes>
-              <Route path="/" element={<OverviewPage />} />
-              <Route path="/new" element={<OverviewPage />} />
-              <Route path="/:id" element={<OverviewPage />} />
-            </Routes>
+            <CustomToastProvider>
+              <Routes>
+                <Route path="/" element={<OverviewPage />} />
+                <Route path="/new" element={<OverviewPage />} />
+                <Route path="/:id" element={<OverviewPage />} />
+              </Routes>
+            </CustomToastProvider>
           </ConfirmationDialogProvider>
         </CustomDialogProvider>
       </ThemeProvider>

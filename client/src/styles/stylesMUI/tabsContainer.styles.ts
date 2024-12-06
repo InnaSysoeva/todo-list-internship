@@ -5,6 +5,7 @@ export const tabsContainerStyles = {
   TabIndicatorProps: {
     sx: {
       backgroundColor: "primary.dark",
+      marginBottom: "6px",
     },
   },
 };

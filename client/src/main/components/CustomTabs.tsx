@@ -3,6 +3,10 @@ import { Tabs, Tab } from "@mui/material";
 import { tabsContainerStyles } from "../../styles/stylesMUI/tabsContainer.styles";
 import { tabStyles } from "../../styles/stylesMUI/tab.styles";
 import { StateEnum } from "../enums/state.enum";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
 
 interface TabsProps {
   onFilterClicked: (filter: StateEnum) => void;
@@ -21,10 +25,30 @@ export const CustomTabs: React.FC<TabsProps> = ({ onFilterClicked }) => {
 
   return (
     <Tabs {...tabsContainerStyles} value={tabIndex} onChange={handleChange}>
-      <Tab label="All" sx={tabStyles} />
-      <Tab label="Active" sx={tabStyles} />
-      <Tab label="In Progress" sx={tabStyles} />
-      <Tab label="Done" sx={tabStyles} />
+      <Tab
+        icon={<FormatListBulletedIcon fontSize="small" />}
+        iconPosition="start"
+        label="All"
+        sx={tabStyles}
+      />
+      <Tab
+        icon={<FiberNewIcon fontSize="small" />}
+        iconPosition="start"
+        label="Active"
+        sx={tabStyles}
+      />
+      <Tab
+        icon={<AutorenewIcon fontSize="small" />}
+        iconPosition="start"
+        label="Pending"
+        sx={tabStyles}
+      />
+      <Tab
+        icon={<DoneAllIcon fontSize="small" />}
+        iconPosition="start"
+        label="Done"
+        sx={tabStyles}
+      />
     </Tabs>
   );
 };

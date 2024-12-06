@@ -8,4 +8,7 @@ export const tableBoxStyles: SxProps = {
   flexDirection: "column",
   width: "80%",
   marginTop: { xs: "20px", md: "40px" },
+  "@media (max-width: 900px)": {
+    width: "95%",
+  },
 };

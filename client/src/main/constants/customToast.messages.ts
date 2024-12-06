@@ -3,6 +3,8 @@ export const toastErrorMessages = {
   update: (entity: string) => `Error updating ${entity}`,
   deletion: (entity: string) => `Error deleting ${entity}`,
   notFound: (entity: string) => `${entity} not found`,
+  internalServerError: (entity: string) =>
+    `Something went wrong while ${entity}`,
 };
 
 export const toastSuccessMessages = {

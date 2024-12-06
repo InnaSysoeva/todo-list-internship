@@ -6,6 +6,10 @@ export const tableCellStyles: SxProps = {
   borderColor: "rgba(224, 224, 224, 1)",
   padding: "8px",
   textAlign: "center",
+  "@media (max-width: 900px)": {
+    pl: "2px",
+    pr: "2px",
+  },
 };
 
-export const cellWidths = ["20px", "800px", "30px", "30px", "50px", "20px"];
+export const cellWidths = ["600px", "30px", "30px", "80px", "10px"];

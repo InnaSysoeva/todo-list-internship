@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Chip } from "@mui/material";
 import { chipStates } from "../constants/chip.state";
+import { stateChipStyles } from "../../styles/stylesMUI/stateChip.styles";
 
 interface TaskStateChipProps {
   initialState: number;
@@ -26,8 +27,9 @@ export const TaskStateChip: React.FC<TaskStateChipProps> = ({
     <Chip
       label={label}
       color={color}
+      variant="filled"
       onClick={handleChipClick}
-      sx={{ width: "95px" }}
+      sx={stateChipStyles}
       clickable
     />
   );

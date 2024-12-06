@@ -1,12 +1,14 @@
 import { SxProps } from "@mui/material";
 
 export const searchInputStyles: SxProps = {
-  height: "35px",
-  padding: "10px",
   backgroundColor: "secondary.main",
   width: "300px",
-  border: "1px solid grey",
-  borderBottom: "none",
+  "& .MuiInputBase-root": {
+    height: "37px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "15px",
+  },
 };
 
 export const searchButtonStyles: SxProps = {
